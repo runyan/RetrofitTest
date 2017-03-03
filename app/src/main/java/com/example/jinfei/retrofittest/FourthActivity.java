@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ public class FourthActivity extends AppCompatActivity {
 
     private RecyclerView lv;
     private TextView tv;
+    private RelativeLayout mainLayout;
 
     private List<Favourite> favouriteList;
 
@@ -32,6 +34,7 @@ public class FourthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fourth);
         lv = (RecyclerView) findViewById(R.id.favorite_list);
         tv = (TextView) findViewById(R.id.no_favorite);
+        mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
         final SearchView searchFavorite = (SearchView) findViewById(R.id.search_favorite);
         favouriteList = Util.getFavouriteList(FourthActivity.this);
         checkList();
@@ -70,10 +73,10 @@ public class FourthActivity extends AppCompatActivity {
     private void checkList() {
         if(favouriteList.isEmpty()) {
             tv.setVisibility(View.VISIBLE);
-            lv.setVisibility(View.INVISIBLE);
+            mainLayout.setVisibility(View.INVISIBLE);
         } else {
             tv.setVisibility(View.INVISIBLE);
-            lv.setVisibility(View.VISIBLE);
+            mainLayout.setVisibility(View.VISIBLE);
         }
     }
 
