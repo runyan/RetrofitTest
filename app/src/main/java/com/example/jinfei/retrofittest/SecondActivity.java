@@ -70,11 +70,7 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
         id = intent.getIntExtra("menuId", 0);
         networkCall();
 
-        if(Util.exist(SecondActivity.this, id)) {
-            favoriteLayout();
-        } else {
-            unFavoriteLayout();
-        }
+        check();
 
         favourite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +108,20 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
                 unFavoriteLayout();
             }
         });
+    }
+
+    private void check() {
+        if(Util.exist(SecondActivity.this, id)) {
+            favoriteLayout();
+        } else {
+            unFavoriteLayout();
+        }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        check();
     }
 
     @SuppressWarnings("all")
