@@ -20,15 +20,34 @@ import java.util.Map;
 
 public class FourthActivity extends AppCompatActivity {
 
+    private ListView lv;
+    private TextView tv;
+
     private List<Favourite> favouriteList;
+
+    private MyAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fourth);
-        ListView lv = (ListView) findViewById(R.id.favorite_list);
-        TextView tv = (TextView) findViewById(R.id.no_favorite);
+        lv = (ListView) findViewById(R.id.favorite_list);
+        tv = (TextView) findViewById(R.id.no_favorite);
         favouriteList = Util.getFavouriteList(FourthActivity.this);
+        checkList();
+        adapter = new MyAdapter(favouriteList);
+        lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Map<String, Object> params = new HashMap<>();
+                params.put("menuId", favouriteList.get(position).getId());
+                Util.redirect(FourthActivity.this, SecondActivity.class, params);
+            }
+        });
+    }
+
+    private void checkList() {
         if(favouriteList.isEmpty()) {
             tv.setVisibility(View.VISIBLE);
             lv.setVisibility(View.INVISIBLE);
@@ -36,16 +55,15 @@ public class FourthActivity extends AppCompatActivity {
             tv.setVisibility(View.INVISIBLE);
             lv.setVisibility(View.VISIBLE);
         }
-        lv.setAdapter(new MyAdapter(favouriteList));
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map<String, Object> params = new HashMap<>();
-                params.put("menuId", favouriteList.get(position).getId());
-                Util.redirect(FourthActivity.this, SecondActivity.class, params);
-                finish();
-            }
-        });
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        favouriteList = Util.getFavouriteList(FourthActivity.this);
+        adapter = new MyAdapter(favouriteList);
+        lv.setAdapter(adapter);
+        checkList();
     }
 
     private class MyAdapter extends BaseAdapter {
