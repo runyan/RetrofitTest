@@ -83,6 +83,29 @@ public class Util {
         context.startActivity(intent);
     }
 
+    public static List<Favourite> searchFavorite(Context context, String name) {
+        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        List<Favourite> favouriteList = new ArrayList<>();
+        Favourite favourite;
+        Cursor cursor = db.rawQuery("select * from Favourite where nick_name like ?", new String[]{"%" + name + "%"});
+        if(cursor.moveToFirst()) {
+            do {
+                favourite = new Favourite();
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String nickName = cursor.getString(cursor.getColumnIndex("nick_name"));
+                String createDate = cursor.getString(cursor.getColumnIndex("create_date"));
+                String imagePath = cursor.getString(cursor.getColumnIndex("image_path"));
+                favourite.setId(id);
+                favourite.setNickName(nickName);
+                favourite.setCreateDate(createDate);
+                favourite.setImagePath(imagePath);
+                favouriteList.add(favourite);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return favouriteList;
+    }
+
     public static List<Favourite> getFavouriteList(Context context) {
         List<Favourite> favouriteList = new ArrayList<>();
         Favourite favourite;
@@ -108,7 +131,7 @@ public class Util {
 
     public static boolean exist(Context context, int id) {
         SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
-        Cursor cursor = db.rawQuery("Select * from Favourite where id = ?", new String[]{String.valueOf(id)});
+        Cursor cursor = db.rawQuery("select * from Favourite where id = ?", new String[]{String.valueOf(id)});
         boolean result = cursor.moveToNext();
         cursor.close();
         return result;

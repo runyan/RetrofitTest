@@ -129,7 +129,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
     @Override
     public void onResponse(Call<Tngou> call, Response<Tngou> response) {
         list = response.body().getList();
-        adapter = new MyRecyclerViewAdapter(MainActivity.this, list);
+        adapter = new MyRecyclerViewAdapter(MainActivity.this, list, "cook");
         rv.setAdapter(adapter);
     }
 

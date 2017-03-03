@@ -16,6 +16,7 @@
     <string name="cancel">取消</string>
     <string name="next_page">再次拖至底部，即可翻页</string>
     <string name="enter_query">请输入菜名进行搜索</string>
+    <string name="enter_favorite_query">请输入收藏昵称进行搜索</string>
     <string name="not_found">没有找到</string>
     <string name="first_page">已经是第一页了</string>
     <string name="my_favourite">我的收藏</string>

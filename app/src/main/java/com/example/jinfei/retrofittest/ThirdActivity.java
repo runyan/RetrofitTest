@@ -64,7 +64,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
                Toast.makeText(ThirdActivity.this, getResources().getString(R.string.not_found), Toast.LENGTH_SHORT).show();
                finish();
            }
-           rv.setAdapter(new MyRecyclerViewAdapter(ThirdActivity.this, list));
+           rv.setAdapter(new MyRecyclerViewAdapter(ThirdActivity.this, list, "cook"));
        }
     }
 
