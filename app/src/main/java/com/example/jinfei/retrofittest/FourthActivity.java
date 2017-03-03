@@ -1,18 +1,20 @@
 package com.example.jinfei.retrofittest;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.util.Util;
+import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.Map;
 
 public class FourthActivity extends AppCompatActivity {
 
-    private ListView lv;
+    private RecyclerView lv;
     private TextView tv;
 
     private List<Favourite> favouriteList;
@@ -31,20 +33,14 @@ public class FourthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fourth);
-        lv = (ListView) findViewById(R.id.favorite_list);
+        lv = (RecyclerView) findViewById(R.id.favorite_list);
         tv = (TextView) findViewById(R.id.no_favorite);
         favouriteList = Util.getFavouriteList(FourthActivity.this);
         checkList();
-        adapter = new MyAdapter(favouriteList);
+        adapter = new MyAdapter(favouriteList, FourthActivity.this);
         lv.setAdapter(adapter);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Map<String, Object> params = new HashMap<>();
-                params.put("menuId", favouriteList.get(position).getId());
-                Util.redirect(FourthActivity.this, SecondActivity.class, params);
-            }
-        });
+        lv.setLayoutManager(new LinearLayoutManager(FourthActivity.this));
+        lv.addItemDecoration(new RecyclerViewDivider(FourthActivity.this, LinearLayout.HORIZONTAL, R.drawable.divider));
     }
 
     private void checkList() {
@@ -61,58 +57,66 @@ public class FourthActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         favouriteList = Util.getFavouriteList(FourthActivity.this);
-        adapter = new MyAdapter(favouriteList);
+        adapter = new MyAdapter(favouriteList, FourthActivity.this);
         lv.setAdapter(adapter);
+        lv.setLayoutManager(new LinearLayoutManager(FourthActivity.this));
+        lv.addItemDecoration(new RecyclerViewDivider(FourthActivity.this, LinearLayout.HORIZONTAL, R.drawable.divider));
         checkList();
     }
 
-    private class MyAdapter extends BaseAdapter {
+    private class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
+        private List<Favourite> list;
+        private Context context;
 
-        List<Favourite> list;
-
-        MyAdapter(List<Favourite> list) {
+        MyAdapter(List<Favourite> list, Context context) {
+            this.context = context;
             this.list = list;
         }
 
         @Override
-        public int getCount() {
-            return list.size();
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.item, parent, false));
         }
 
         @Override
-        public Object getItem(int position) {
-            return list.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(null == convertView) {
-                convertView = LayoutInflater.from(FourthActivity.this).inflate(R.layout.item, parent, false);
-                convertView.setTag(new ViewHolder(convertView));
-            }
-            ViewHolder holder = (ViewHolder) convertView.getTag();
-            Favourite favourite = list.get(position);
-            Util.setImage(FourthActivity.this, favourite.getImagePath(), holder.iv);
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            final Favourite favourite = list.get(position);
+            Util.setImage(context, favourite.getImagePath(), holder.iv);
             holder.tv_title.setText(favourite.getNickName());
             holder.tv_content.setText(favourite.getCreateDate());
-            return convertView;
+            holder.item_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("menuId", favourite.getId());
+                    Util.redirect(context, SecondActivity.class, params);
+                }
+            });
         }
 
-        class ViewHolder {
+        @Override
+        public int getItemCount() {
+            if(null != list) {
+                return list.size();
+            }
+            return 0;
+        }
+
+        class MyViewHolder extends RecyclerView.ViewHolder {
             ImageView iv;
             TextView tv_title;
             TextView tv_content;
+            LinearLayout item_view;
 
-            ViewHolder(View view) {
+            MyViewHolder(View view) {
+                super(view);
                 iv = (ImageView) view.findViewById(R.id.item_iv);
                 tv_title = (TextView) view.findViewById(R.id.item_title);
                 tv_content = (TextView) view.findViewById(R.id.item_info);
+                item_view = (LinearLayout) view.findViewById(R.id.item_view);
             }
         }
+
     }
+
 }

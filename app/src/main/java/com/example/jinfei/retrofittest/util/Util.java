@@ -10,12 +10,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.R;
 import com.example.jinfei.retrofittest.myInterface.Service;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.Serializable;
@@ -44,7 +44,7 @@ public class Util {
     }
 
     public static void setImage(Context context, String imgSrc, ImageView imageView) {
-        Glide.with(context).load("http://tnfs.tngou.net/img" + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).into(imageView);
+        Picasso.with(context).load("http://tnfs.tngou.net/img" + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).into(imageView);
     }
 
     public static void showErrorDialog(Context context, final NetworkInterface network, final NetworkError networkError) {
