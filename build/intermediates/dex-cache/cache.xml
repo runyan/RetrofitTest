@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\support-media-compat\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ee394a892dd21c03a528139c1e8d4e0e1264ac84">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-support-media-compat-25.2.0_8f03245947ba352ceb5b1915a436e7555283d363.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\jinfei\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\retrofit\2.2.0\41e67dba73c3347e4503761642c39d0e06ca1f2\retrofit-2.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="041e67dba73c3347e4503761642c39d0e06ca1f2">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\retrofit-2.2.0_58cfd939e03d7e03988452cac58d2f17dd32525c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="8fe8a8f77d651982ce5e18f6187dc4daf914ac57">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-support-fragment-25.2.0_a8204631a70dbcb743bde5d3d1273486d52e5bae.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\transition\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e51c2f662bb72419632af5192553c37e33890a99">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-transition-25.2.0_5db390c045097d3f664e1ba2061b98623c897de4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="cb454b52545859ed2f24a6c01366805b0fa04b22">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-animated-vector-drawable-25.2.0_46cfe05837f45eb9225459b052e5d2cee7354b6d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="810f41e5b7fd99f196ebeabe865ba2c54e7e76dc">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-support-vector-drawable-25.2.0_24eedd408f15f3425f42459911cbb8b2e3e905c9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\support-core-utils\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="e820b7be8c035dd522da4bc822e8a76c8e27921a">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-support-core-utils-25.2.0_7cb4ccba39da6a48f9e984aad773fab9996546b6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\jinfei\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.11.0\840897fcd7223a8143f1d9b6f69714e7be34fd50\okio-1.11.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="840897fcd7223a8143f1d9b6f69714e7be34fd50">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\okio-1.11.0_204518520e251026f4df0f6a563f85d8f58f0554.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\support-v4\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-support-v4-25.2.0_13c406f34d68052a78dc3dc66e91c6e661af973d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\support-compat\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="67eb33110dbacb46a48175b08ae0c96761d2c17d">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-support-compat-25.2.0_109115dfa889e2f2b5153846d6cea39d3f7073c8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="702d339bc0a81d21354cd7e2cf2b67225fa4a16c">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-appcompat-v7-25.2.0_6e365d30ab683531fb82bbfc09f0045488453fc5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\design\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="ea6a989b83d19b1b461281e0475a6cd6514897f8">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-design-25.2.0_91c9761799004261a4996199f51f416bb26d1736.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\support-core-ui\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="fa0446a14ed5dd3725047d6399ffea771a564b30">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-support-core-ui-25.2.0_47b0b685c612d7c5f82689e102901e4cdf7f1848.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\Android\RetrofitTest\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\25.2.0\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="152de8da301561dcb0946471697a420d8f7a68c5">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\com.android.support-recyclerview-v7-25.2.0_4cd47459aa2d14e1f44766ee83dd8a0e11551b5d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\jinfei\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.7\751f548c85fa49f330cecbb1875893f971b33c4e\gson-2.7.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="751f548c85fa49f330cecbb1875893f971b33c4e">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\gson-2.7_872fb2d2b8e2b2e66dd3982008e253963023a6e1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="D:\SDK\extras\android\m2repository\com\android\support\support-annotations\25.2.0\support-annotations-25.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="4a5a82a027706397fff621b22fd6fa796e91d7c5">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\support-annotations-25.2.0_3ab93f63ae0730539471bf2c07542e49a35e5b7a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\jinfei\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp3\okhttp\3.6.0\69edde9fc4b01c9fd51d25b83428837478c27254\okhttp-3.6.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="69edde9fc4b01c9fd51d25b83428837478c27254">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\okhttp-3.6.0_3c262e42891e9d1af885b6e90455d7604d80d0d4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\jinfei\.gradle\caches\modules-2\files-2.1\com.github.bumptech.glide\glide\3.7.0\9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4\glide-3.7.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="9e9eeaf9948ee4d6c3ab354e8dc14368f16994a4">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\glide-3.7.0_67e7126f48c95a2cc39e82b58d036a955d572b37.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="C:\Users\jinfei\.gradle\caches\modules-2\files-2.1\com.squareup.retrofit2\converter-gson\2.2.0\a09926806199499a20b2f5168779499abfa33342\converter-gson-2.2.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="a09926806199499a20b2f5168779499abfa33342">
+        <dex dex="D:\Android\RetrofitTest\app\build\intermediates\pre-dexed\debug\converter-gson-2.2.0_4979e9586762ae7246707580eabb2248b53c80dd.jar" />
+    </item>
+
+</items>

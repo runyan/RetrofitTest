@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">RetrofitTest</string>
+    <string name="title">标题</string>
+    <string name="content">内容</string>
+    <string name="food">主要食材：</string>
+    <string name="keywords">关键字：</string>
+    <string name="description">简介：</string>
+    <string name="message">说明：</string>
+    <string name="count">访问数：</string>
+    <string name="fcount">收藏数：</string>
+    <string name="rcount">评论数：</string>
+    <string name="error">出错了</string>
+    <string name="loading">加载中</string>
+    <string name="network_error">网络错误</string>
+    <string name="reconnect">重试</string>
+    <string name="cancel">取消</string>
+    <string name="next_page">再次拖至底部，即可翻页</string>
+    <string name="enter_query">请输入菜名进行搜索</string>
+    <string name="not_found">没有找到</string>
+    <string name="first_page">已经是第一页了</string>
+</resources>
