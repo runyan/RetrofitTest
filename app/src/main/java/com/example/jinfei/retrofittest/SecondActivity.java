@@ -1,16 +1,19 @@
 package com.example.jinfei.retrofittest;
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jinfei.retrofittest.entity.Menu;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
@@ -22,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SecondActivity extends AppCompatActivity implements Callback<Menu> {
+public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
     private ImageView pic;
     private TextView name;
@@ -34,12 +37,15 @@ public class SecondActivity extends AppCompatActivity implements Callback<Menu> 
     private TextView fcount;
     private TextView rcount;
     private RelativeLayout networkErrorLayout;
-    private ScrollView scrollView;
+    private RelativeLayout mainLayout;
     private Button retry;
+    private FloatingActionButton favourite;
+    private FloatingActionButton unFavourite;
 
     private static final String TAG = "SecondActivity";
 
     private int id;
+    private String imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +62,56 @@ public class SecondActivity extends AppCompatActivity implements Callback<Menu> 
         rcount = (TextView) findViewById(R.id.menu_rcount);
         networkErrorLayout = (RelativeLayout) findViewById(R.id.network_error_layout);
         retry = (Button) findViewById(R.id.retry);
-        scrollView = (ScrollView) findViewById(R.id.scroll_view);
+        mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
+        favourite = (FloatingActionButton) findViewById(R.id.favorite);
+        unFavourite = (FloatingActionButton) findViewById(R.id.un_favorite);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("menuId", 0);
         networkCall();
+
+        if(Util.exist(SecondActivity.this, id)) {
+            favoriteLayout();
+        } else {
+            unFavoriteLayout();
+        }
+
+        favourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText et = new EditText(SecondActivity.this);
+                et.setText(getResources().getString(R.string.my_favourite));
+                et.setSelection(et.getText().toString().length());
+                new AlertDialog.Builder(SecondActivity.this).setTitle(getResources().getString(R.string.enter_nickname))
+                        .setView(et)
+                        .setCancelable(false)
+                        .setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String nickName = et.getText().toString();
+                                if(nickName.isEmpty()) {
+                                    Toast.makeText(SecondActivity.this, getResources().getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    boolean r = Util.save(SecondActivity.this, id, nickName, imagePath);
+                                    String msg = r ? getResources().getString(R.string.favorite_success) : getResources().getString(R.string.favorite_fail);
+                                    Toast.makeText(SecondActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                    favoriteLayout();
+                                }
+                            }
+                        })
+                        .show();
+            }
+        });
+
+        unFavourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean r = Util.delete(SecondActivity.this, id);
+                String msg = r ? getResources().getString(R.string.unfavorite_success) : getResources().getString(R.string.unfavorite_fail);
+                Toast.makeText(SecondActivity.this, msg, Toast.LENGTH_SHORT).show();
+                unFavoriteLayout();
+            }
+        });
     }
 
     @SuppressWarnings("all")
@@ -70,7 +121,8 @@ public class SecondActivity extends AppCompatActivity implements Callback<Menu> 
           handleError(response.toString());
        } else {
            Menu menu = response.body();
-           Util.setImage(SecondActivity.this, menu.getImg(), pic);
+           imagePath = menu.getImg();
+           Util.setImage(SecondActivity.this, imagePath, pic);
            name.setText(menu.getName());
            food.setText(Html.fromHtml("<b>" + getResources().getString(R.string.food) + "</b>" + menu.getFood()));
            keywords.setText(Html.fromHtml("<b>" + getResources().getString(R.string.keywords) + "</b>" + menu.getKeywords()));
@@ -89,7 +141,7 @@ public class SecondActivity extends AppCompatActivity implements Callback<Menu> 
 
     private void networkCall() {
         networkErrorLayout.setVisibility(View.GONE);
-        scrollView.setVisibility(View.VISIBLE);
+        mainLayout.setVisibility(View.VISIBLE);
         Service service = Util.getService(SecondActivity.this);
         Call<Menu> call = service.getMenu(id);
         call.enqueue(this);
@@ -106,7 +158,7 @@ public class SecondActivity extends AppCompatActivity implements Callback<Menu> 
             @Override
             public void onError() {
                 networkErrorLayout.setVisibility(View.VISIBLE);
-                scrollView.setVisibility(View.GONE);
+                mainLayout.setVisibility(View.GONE);
                 retry.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -115,6 +167,16 @@ public class SecondActivity extends AppCompatActivity implements Callback<Menu> 
                 });
             }
         });
-
     }
+
+    private void favoriteLayout() {
+        favourite.setVisibility(View.INVISIBLE);
+        unFavourite.setVisibility(View.VISIBLE);
+    }
+
+    private void unFavoriteLayout() {
+        favourite.setVisibility(View.VISIBLE);
+        unFavourite.setVisibility(View.INVISIBLE);
+    }
+
 }

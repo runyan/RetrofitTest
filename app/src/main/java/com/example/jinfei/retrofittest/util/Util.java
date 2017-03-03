@@ -2,12 +2,16 @@ package com.example.jinfei.retrofittest.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.R;
@@ -15,6 +19,11 @@ import com.example.jinfei.retrofittest.myInterface.Service;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +81,54 @@ public class Util {
             }
         }
         context.startActivity(intent);
+    }
+
+    public static List<Favourite> getFavouriteList(Context context) {
+        List<Favourite> favouriteList = new ArrayList<>();
+        Favourite favourite;
+        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        Cursor cursor = db.query("Favourite", null, null, null, null, null, null);
+        if(cursor.moveToFirst()) {
+            do {
+                favourite = new Favourite();
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String nickName = cursor.getString(cursor.getColumnIndex("nick_name"));
+                String createDate = cursor.getString(cursor.getColumnIndex("create_date"));
+                String imagePath = cursor.getString(cursor.getColumnIndex("image_path"));
+                favourite.setId(id);
+                favourite.setNickName(nickName);
+                favourite.setCreateDate(createDate);
+                favourite.setImagePath(imagePath);
+                favouriteList.add(favourite);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return favouriteList;
+    }
+
+    public static boolean exist(Context context, int id) {
+        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        Cursor cursor = db.rawQuery("Select * from Favourite where id = ?", new String[]{String.valueOf(id)});
+        boolean result = cursor.moveToNext();
+        cursor.close();
+        return result;
+    }
+
+    public static boolean delete(Context context, int id) {
+        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        int rowAffected = db.delete("Favourite", "id=?", new String[]{String.valueOf(id)});
+        return rowAffected > 0;
+    }
+
+    public static boolean save(Context context, int id, String nickName, String imgPath) {
+        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("id", id);
+        values.put("create_date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()));
+        values.put("nick_name", nickName);
+        values.put("image_path", imgPath);
+        long rowAffected = db.insert("Favourite", null, values);
+        return rowAffected > 0;
     }
 
 }

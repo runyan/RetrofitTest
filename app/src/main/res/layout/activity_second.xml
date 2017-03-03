@@ -10,98 +10,121 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.jinfei.retrofittest.SecondActivity">
 
-    <ScrollView
-        android:id="@+id/scroll_view"
+    <RelativeLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <ImageView
-                android:id="@+id/menu_pic"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:contentDescription="@string/app_name"/>
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/menu_name"
-                android:layout_below="@+id/menu_pic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:clickable="false" />
+                <ImageView
+                    android:id="@+id/menu_pic"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:contentDescription="@string/app_name"/>
 
-            <TextView
-                android:id="@+id/menu_food"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/menu_name"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="false" />
+                <TextView
+                    android:id="@+id/menu_name"
+                    android:layout_below="@+id/menu_pic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:clickable="false" />
 
-            <TextView
-                android:id="@+id/menu_keywords"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/menu_food"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="false" />
+                <TextView
+                    android:id="@+id/menu_food"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_name"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false" />
 
-            <TextView
-                android:id="@+id/menu_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/menu_keywords"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="false" />
+                <TextView
+                    android:id="@+id/menu_keywords"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_food"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false" />
 
-            <TextView
-                android:id="@+id/menu_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/menu_description"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="false" />
+                <TextView
+                    android:id="@+id/menu_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_keywords"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false" />
 
-            <TextView
-                android:id="@+id/menu_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/menu_message"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="false" />
+                <TextView
+                    android:id="@+id/menu_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_description"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false" />
 
-            <TextView
-                android:id="@+id/menu_fcount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/menu_count"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="false" />
+                <TextView
+                    android:id="@+id/menu_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_message"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false" />
 
-            <TextView
-                android:id="@+id/menu_rcount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/menu_fcount"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
-                android:clickable="false" />
+                <TextView
+                    android:id="@+id/menu_fcount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_count"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/menu_rcount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menu_fcount"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="false" />
 
-    </ScrollView>
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/shoucang"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/un_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/un_favorite"/>
+
+    </RelativeLayout>
 
     <include layout="@layout/network_error_layout"
         android:id="@+id/network_error_layout"

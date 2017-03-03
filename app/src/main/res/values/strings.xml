@@ -18,4 +18,13 @@
     <string name="enter_query">请输入菜名进行搜索</string>
     <string name="not_found">没有找到</string>
     <string name="first_page">已经是第一页了</string>
+    <string name="my_favourite">我的收藏</string>
+    <string name="no_favourite">还没有收藏</string>
+    <string name="enter_nickname">请输入收藏的昵称</string>
+    <string name="confirm">确定</string>
+    <string name="nickname_not_empty">昵称不能为空</string>
+    <string name="favorite_success">收藏成功</string>
+    <string name="favorite_fail">收藏失败</string>
+    <string name="unfavorite_success">取消收藏成功</string>
+    <string name="unfavorite_fail">取消收藏失败</string>
 </resources>

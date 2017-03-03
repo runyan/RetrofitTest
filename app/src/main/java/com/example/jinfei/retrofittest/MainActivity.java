@@ -2,7 +2,6 @@ package com.example.jinfei.retrofittest;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements Callback<Tngou> {
+public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
     private RecyclerView rv;
     private LinearLayoutManager mLayoutManager;
