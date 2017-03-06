@@ -44,7 +44,7 @@ public class Util {
     }
 
     public static void setImage(Context context, String imgSrc, ImageView imageView) {
-        Picasso.with(context).load("http://tnfs.tngou.net/img" + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).into(imageView);
+        Picasso.with(context).load("http://tnfs.tngou.net/img" + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).error(R.mipmap.ic_launcher).into(imageView);
     }
 
     public static void showErrorDialog(Context context, final NetworkInterface network, final NetworkError networkError) {
@@ -90,11 +90,11 @@ public class Util {
         Cursor cursor = db.rawQuery("select * from Favourite where nick_name like ?", new String[]{"%" + name + "%"});
         if(cursor.moveToFirst()) {
             do {
-                favourite = new Favourite();
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
                 String nickName = cursor.getString(cursor.getColumnIndex("nick_name"));
                 String createDate = cursor.getString(cursor.getColumnIndex("create_date"));
                 String imagePath = cursor.getString(cursor.getColumnIndex("image_path"));
+                favourite = new Favourite();
                 favourite.setId(id);
                 favourite.setNickName(nickName);
                 favourite.setCreateDate(createDate);
@@ -132,15 +132,15 @@ public class Util {
     public static boolean exist(Context context, int id) {
         SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from Favourite where id = ?", new String[]{String.valueOf(id)});
-        boolean result = cursor.moveToNext();
+        boolean exists = cursor.moveToNext();
         cursor.close();
-        return result;
+        return exists;
     }
 
     public static boolean delete(Context context, int id) {
         SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
-        int rowAffected = db.delete("Favourite", "id=?", new String[]{String.valueOf(id)});
-        return rowAffected > 0;
+        int rowsAffected = db.delete("Favourite", "id=?", new String[]{String.valueOf(id)});
+        return rowsAffected > 0;
     }
 
     public static boolean save(Context context, int id, String nickName, String imgPath) {
@@ -150,16 +150,16 @@ public class Util {
         values.put("create_date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()));
         values.put("nick_name", nickName);
         values.put("image_path", imgPath);
-        long rowAffected = db.insert("Favourite", null, values);
-        return rowAffected > 0;
+        long insertedRowID = db.insert("Favourite", null, values);
+        return insertedRowID > 0;
     }
 
     public static boolean update(Context context, int id, String newName) {
         SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("nick_name", newName);
-        int rowAffected = db.update("Favourite", values, "id=?", new String[]{String.valueOf(id)});
-        return rowAffected > 0;
+        int rowsAffected = db.update("Favourite", values, "id=?", new String[]{String.valueOf(id)});
+        return rowsAffected > 0;
     }
 
 }

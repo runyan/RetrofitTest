@@ -1,5 +1,6 @@
 package com.example.jinfei.retrofittest;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
@@ -55,11 +56,6 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     @BindView(R.id.un_favorite)
     FloatingActionButton unFavourite;
 
-    private static final String TAG = "SecondActivity";
-
-    private int id;
-    private String imagePath;
-
     @BindString(R.string.my_favourite)
     String myFavorite;
     @BindString(R.string.enter_nickname)
@@ -91,12 +87,19 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     @BindString(R.string.rcount)
     String rcountStr;
 
+    private static final String TAG = "SecondActivity";
+
+    private int id;
+    private String imagePath;
+
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         ButterKnife.bind(this);
+        mContext = SecondActivity.this;
 
         Intent intent = getIntent();
         id = intent.getIntExtra("menuId", 0);
@@ -106,11 +109,8 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     }
 
     private void check() {
-        if (Util.exist(SecondActivity.this, id)) {
-            favoriteLayout();
-        } else {
-            unFavoriteLayout();
-        }
+        boolean exists = Util.exist(mContext, id);
+        favoriteLayout(exists);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
         } else {
             Menu menu = response.body();
             imagePath = menu.getImg();
-            Util.setImage(SecondActivity.this, imagePath, pic);
+            Util.setImage(mContext, imagePath, pic);
             name.setText(menu.getName());
             food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
             keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
@@ -146,14 +146,14 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
     private void networkCall() {
         chooseLayout(false, mainLayout);
-        Service service = Util.getService(SecondActivity.this);
+        Service service = Util.getService(mContext);
         Call<Menu> call = service.getMenu(id);
         call.enqueue(this);
     }
 
     private void handleError(String reason) {
         Log.e(TAG, reason);
-        Util.showErrorDialog(SecondActivity.this, new NetworkInterface() {
+        Util.showErrorDialog(mContext, new NetworkInterface() {
             @Override
             public void call() {
                 networkCall();
@@ -172,10 +172,10 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
     @OnClick(R.id.favorite)
     void favorite() {
-        final EditText et = new EditText(SecondActivity.this);
+        final EditText et = new EditText(mContext);
         et.setText(myFavorite);
         et.setSelection(et.getText().toString().length());
-        new AlertDialog.Builder(SecondActivity.this).setTitle(title)
+        new AlertDialog.Builder(mContext).setTitle(title)
                 .setView(et)
                 .setCancelable(false)
                 .setPositiveButton(confirm, new DialogInterface.OnClickListener() {
@@ -183,13 +183,14 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
                     public void onClick(DialogInterface dialog, int which) {
                         String nickName = et.getText().toString();
                         if (nickName.isEmpty()) {
-                            Toast.makeText(SecondActivity.this, nickNameNotEmpty, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT).show();
                         } else {
-                            boolean r = Util.save(SecondActivity.this, id, nickName, imagePath);
-                            String msg = r ? favoriteSuccess : favoriteFail;
-                            Toast.makeText(SecondActivity.this, msg, Toast.LENGTH_SHORT).show();
-                            favoriteLayout();
+                            boolean saveResult = Util.save(SecondActivity.this, id, nickName, imagePath);
+                            String msg = saveResult ? favoriteSuccess : favoriteFail;
+                            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+                            favoriteLayout(true);
                         }
+                        dialog.dismiss();
                     }
                 })
                 .show();
@@ -197,20 +198,17 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
     @OnClick(R.id.un_favorite)
     void unFavorite() {
-        boolean r = Util.delete(SecondActivity.this, id);
-        String msg = r ? unFavoriteSuccess : unFavoriteFail;
-        Toast.makeText(SecondActivity.this, msg, Toast.LENGTH_SHORT).show();
-        unFavoriteLayout();
+        boolean deleteResult = Util.delete(mContext, id);
+        String msg = deleteResult ? unFavoriteSuccess : unFavoriteFail;
+        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+        favoriteLayout(false);
     }
 
-    private void favoriteLayout() {
-        favourite.setVisibility(View.INVISIBLE);
-        unFavourite.setVisibility(View.VISIBLE);
-    }
-
-    private void unFavoriteLayout() {
-        favourite.setVisibility(View.VISIBLE);
-        unFavourite.setVisibility(View.INVISIBLE);
+    private void favoriteLayout(boolean favorite) {
+        int favoriteVisibility = favorite ? View.INVISIBLE : View.VISIBLE;
+        int unFavoriteVisibility = favorite ? View.VISIBLE : View.INVISIBLE;
+        favourite.setVisibility(favoriteVisibility);
+        unFavourite.setVisibility(unFavoriteVisibility);
     }
 
 }

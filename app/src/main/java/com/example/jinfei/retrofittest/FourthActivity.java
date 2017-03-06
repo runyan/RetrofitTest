@@ -1,5 +1,6 @@
 package com.example.jinfei.retrofittest;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +27,7 @@ import butterknife.ButterKnife;
 public class FourthActivity extends AppCompatActivity {
 
     @BindView(R.id.favorite_list)
-    RecyclerView lv;
+    RecyclerView rv;
     @BindView(R.id.no_favorite)
     TextView tv;
     @BindView(R.id.main_layout)
@@ -41,34 +42,47 @@ public class FourthActivity extends AppCompatActivity {
 
     private MyRecyclerViewAdapter adapter;
 
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fourth);
         ButterKnife.bind(this);
-        favouriteList = Util.getFavouriteList(FourthActivity.this);
-        checkList();
-        adapter = new MyRecyclerViewAdapter(FourthActivity.this, favouriteList, "favorite", new UIListener() {
+        mContext = FourthActivity.this;
+        favouriteList = Util.getFavouriteList(mContext);
+        checkList(favouriteList);
+        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite", new UIListener() {
             @Override
             public void onDataChange() {
-                checkList();
+                if(null != favouriteList) {
+                    checkList(favouriteList);
+                }
             }
         });
-        lv.setAdapter(adapter);
-        lv.setLayoutManager(new LinearLayoutManager(FourthActivity.this));
-        lv.addItemDecoration(new RecyclerViewDivider(FourthActivity.this, LinearLayout.HORIZONTAL, R.drawable.divider));
+        rv.setAdapter(adapter);
+        rv.setLayoutManager(new LinearLayoutManager(mContext));
+        rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
 
         searchFavorite.setIconifiedByDefault(false);
         searchFavorite.setFocusable(false);
         searchFavorite.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                List<Favourite> searchResult = Util.searchFavorite(FourthActivity.this, query);
+                final List<Favourite> searchResult = Util.searchFavorite(mContext, query);
                 if(searchResult.isEmpty()) {
-                    Toast.makeText(FourthActivity.this, notFound,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
                 } else {
-                    adapter = new MyRecyclerViewAdapter(FourthActivity.this, searchResult, "favorite");
-                    lv.setAdapter(adapter);
+                    searchFavorite.clearFocus();
+                    adapter = new MyRecyclerViewAdapter(mContext, searchResult, "favorite", new UIListener() {
+                        @Override
+                        public void onDataChange() {
+                            if(searchResult.isEmpty()) {
+                                onRestart();
+                            }
+                        }
+                    });
+                    rv.setAdapter(adapter);
                 }
                 return true;
             }
@@ -77,31 +91,29 @@ public class FourthActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if(newText.isEmpty()) {
                     searchFavorite.clearFocus();
-                    adapter = new MyRecyclerViewAdapter(FourthActivity.this, favouriteList, "favorite");
-                    lv.setAdapter(adapter);
+                    adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite");
+                    rv.setAdapter(adapter);
                 }
                 return true;
             }
         });
     }
 
-    public void checkList() {
-        if(favouriteList.isEmpty()) {
-            tv.setVisibility(View.VISIBLE);
-            mainLayout.setVisibility(View.INVISIBLE);
-        } else {
-            tv.setVisibility(View.INVISIBLE);
-            mainLayout.setVisibility(View.VISIBLE);
-        }
+    public void checkList(List<Favourite> list) {
+        boolean isEmpty = list.isEmpty();
+        int tvVisibility = isEmpty ? View.VISIBLE : View.INVISIBLE;
+        int mainLayoutVisibility = isEmpty ? View.INVISIBLE : View.VISIBLE;
+        tv.setVisibility(tvVisibility);
+        mainLayout.setVisibility(mainLayoutVisibility);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        favouriteList = Util.getFavouriteList(FourthActivity.this);
-        adapter = new MyRecyclerViewAdapter(FourthActivity.this, favouriteList, "favorite");
-        lv.setAdapter(adapter);
-        checkList();
+        favouriteList = Util.getFavouriteList(mContext);
+        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite");
+        rv.setAdapter(adapter);
+        checkList(favouriteList);
     }
 
 }

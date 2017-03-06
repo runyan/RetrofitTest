@@ -1,5 +1,6 @@
 package com.example.jinfei.retrofittest;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
     private static final String TAG = "ThirdActivity";
 
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +49,10 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
         ButterKnife.bind(this);
 
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.addItemDecoration(new RecyclerViewDivider(ThirdActivity.this, LinearLayout.HORIZONTAL, 4, Color.BLUE));
+        mContext = ThirdActivity.this;
+
+        rv.setLayoutManager(new LinearLayoutManager(mContext));
+        rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 4, Color.BLUE));
 
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
@@ -61,10 +66,10 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
        } else {
            List<Cook> list = response.body().getList();
            if(null == list || list.isEmpty()) {
-               Toast.makeText(ThirdActivity.this, notFound, Toast.LENGTH_SHORT).show();
+               Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
                finish();
            }
-           rv.setAdapter(new MyRecyclerViewAdapter(ThirdActivity.this, list, "cook"));
+           rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, "cook"));
        }
     }
 
@@ -75,7 +80,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
     private void handleError(String reason) {
         Log.e(TAG, reason);
-        Util.showErrorDialog(ThirdActivity.this, new NetworkInterface() {
+        Util.showErrorDialog(mContext, new NetworkInterface() {
             @Override
             public void call() {
                 networkCall(name);
@@ -94,7 +99,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
     private void networkCall(String name) {
         chooseLayout(false, rv);
-        Service service = Util.getService(this);
+        Service service = Util.getService(mContext);
         Call<Tngou> call = service.getDishes(name);
         call.enqueue(this);
     }

@@ -1,5 +1,6 @@
 package com.example.jinfei.retrofittest;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,14 +62,17 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
     private static final String TAG = "MainActivity";
 
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mLayoutManager = new LinearLayoutManager(this);
+        mContext = MainActivity.this;
+        mLayoutManager = new LinearLayoutManager(mContext);
         rv.setLayoutManager(mLayoutManager);
-        rv.addItemDecoration(new RecyclerViewDivider(MainActivity.this, LinearLayoutManager.HORIZONTAL));
+        rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
         networkCall();
 
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -111,7 +115,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
             public boolean onQueryTextSubmit(String query) {
                 Map<String, Object> params = new HashMap<>();
                 params.put("name", query);
-                Util.redirect(MainActivity.this, ThirdActivity.class, params);
+                Util.redirect(mContext, ThirdActivity.class, params);
                 search.clearFocus();
                 return true;
             }
@@ -127,14 +131,14 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
     @Override
     public void onResponse(Call<Tngou> call, Response<Tngou> response) {
         list = response.body().getList();
-        adapter = new MyRecyclerViewAdapter(MainActivity.this, list, "cook");
+        adapter = new MyRecyclerViewAdapter(mContext, list, "cook");
         rv.setAdapter(adapter);
     }
 
     @Override
     public void onFailure(Call<Tngou> call, Throwable t) {
         Log.e(TAG, t.toString());
-        Util.showErrorDialog(MainActivity.this, new NetworkInterface() {
+        Util.showErrorDialog(mContext, new NetworkInterface() {
             @Override
             public void call() {
                 networkCall();
@@ -152,7 +156,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
         if(pageNum > 1) {
             move(false);
         } else {
-            Toast.makeText(MainActivity.this, firstPageStr, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, firstPageStr, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -162,7 +166,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
     private void networkCall() {
         chooseLayout(false, normalLayout);
-        Service service = Util.getService(MainActivity.this);
+        Service service = Util.getService(mContext);
         Call<Tngou> call = service.getList("cook", 0, pageNum, 20);
         call.enqueue(this);
     }

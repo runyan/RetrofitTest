@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
             setLayout(holder, cook.getName(), cook.getDescription(), cook.getImg(), cook.getId());
         } else if ("favorite".equals(type)) {
             Favourite favourite = (Favourite) list.get(position);
-            final int p = position;
+            final int tempPosition = position;
             final int id = favourite.getId();
             final String nickName = favourite.getNickName();
             setLayout(holder, nickName, favourite.getCreateDate(), favourite.getImagePath(), id);
@@ -100,13 +101,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                                         Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
                                     } else {
                                         boolean updateResult = Util.update(context, id, newName);
+                                        String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
                                         if (updateResult) {
-                                            Toast.makeText(context, context.getString(R.string.update_success), Toast.LENGTH_SHORT).show();
-                                            ((Favourite) list.get(p)).setNickName(newName);
+                                            ((Favourite) list.get(tempPosition)).setNickName(newName);
                                             notifyDataSetChanged();
-                                        } else {
-                                            Toast.makeText(context, context.getString(R.string.update_fail), Toast.LENGTH_SHORT).show();
                                         }
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                                     }
                                     dialogInterface.dismiss();
                                 }
@@ -115,15 +115,16 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     boolean deleteResult = Util.delete(context, id);
+                                    String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
                                     if(deleteResult) {
-                                        Toast.makeText(context, context.getString(R.string.unfavorite_success), Toast.LENGTH_SHORT).show();
-                                        list.remove(p);
-                                        notifyItemRemoved(p);
-                                        notifyItemRangeChanged(p, getItemCount());
-                                        listener.onDataChange();
-                                    } else {
-                                        Toast.makeText(context, context.getString(R.string.unfavorite_fail), Toast.LENGTH_SHORT).show();
+                                        list.remove(tempPosition);
+                                        notifyItemRemoved(tempPosition);
+                                        notifyItemRangeChanged(tempPosition, getItemCount());
+                                        if(null != listener) {
+                                            listener.onDataChange();
+                                        }
                                     }
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                                     dialogInterface.dismiss();
                                 }
                             })
