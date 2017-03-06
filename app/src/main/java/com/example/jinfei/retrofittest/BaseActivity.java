@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,15 +32,16 @@ public class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
+    @OnClick(R.id.retry)
+    protected void retry() {
+
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         DBHelper.closeDB();
-    }
-
-    @OnClick(R.id.retry)
-    protected void retry() {
-
     }
 
     protected void chooseLayout(boolean networkError, View anotherView) {

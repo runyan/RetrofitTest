@@ -24,21 +24,23 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
     }
 
-    static SQLiteDatabase getDB(Context context) {
+    static synchronized SQLiteDatabase getDB(Context context) {
         if(null == dbHelper) {
-            synchronized (SQLiteDatabase.class) {
-                dbHelper = new DBHelper(context, "Menu.db", null, 1);
-                if(mOpenCounter.incrementAndGet() == 1) {
-                    database = dbHelper.getWritableDatabase();
-                }
-            }
+            dbHelper = new DBHelper(context, "Menu.db", null, 1);
+        }
+        if(mOpenCounter.incrementAndGet() == 1) {
+            database = dbHelper.getWritableDatabase();
         }
         return database;
     }
 
     public static void closeDB() {
-        if(mOpenCounter.incrementAndGet() == 0) {
+        if(mOpenCounter.decrementAndGet() == 0) {
             database.close();
+            database = null;
+        }
+        if(mOpenCounter.intValue() < 0) {
+            mOpenCounter = new AtomicInteger(0);
         }
     }
 
