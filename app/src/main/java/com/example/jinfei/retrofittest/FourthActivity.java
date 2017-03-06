@@ -77,9 +77,7 @@ public class FourthActivity extends AppCompatActivity {
                     adapter = new MyRecyclerViewAdapter(mContext, searchResult, "favorite", new UIListener() {
                         @Override
                         public void onDataChange() {
-                            if(searchResult.isEmpty()) {
-                                onRestart();
-                            }
+                            onRestart();
                         }
                     });
                     rv.setAdapter(adapter);

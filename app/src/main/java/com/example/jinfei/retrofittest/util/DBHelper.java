@@ -4,7 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-class DBHelper extends SQLiteOpenHelper {
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class DBHelper extends SQLiteOpenHelper {
+
+    private static DBHelper dbHelper;
+    private static SQLiteDatabase database;
+
+    private static AtomicInteger mOpenCounter = new AtomicInteger();
 
     private static final String CREATE_DB = "create table Favourite(" +
             "id integer primary key," +
@@ -13,8 +20,26 @@ class DBHelper extends SQLiteOpenHelper {
             "image_path text" +
             ")";
 
-    DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)  {
+    private DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)  {
         super(context, name, factory, version);
+    }
+
+    static SQLiteDatabase getDB(Context context) {
+        if(null == dbHelper) {
+            synchronized (SQLiteDatabase.class) {
+                dbHelper = new DBHelper(context, "Menu.db", null, 1);
+                if(mOpenCounter.incrementAndGet() == 1) {
+                    database = dbHelper.getWritableDatabase();
+                }
+            }
+        }
+        return database;
+    }
+
+    public static void closeDB() {
+        if(mOpenCounter.incrementAndGet() == 0) {
+            database.close();
+        }
     }
 
     @Override
@@ -26,4 +51,5 @@ class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
 }

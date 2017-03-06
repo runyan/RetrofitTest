@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.example.jinfei.retrofittest.util.DBHelper;
 import com.example.jinfei.retrofittest.util.Util;
 
 import butterknife.BindView;
@@ -28,6 +29,12 @@ public class BaseActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
         ButterKnife.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DBHelper.closeDB();
     }
 
     @OnClick(R.id.retry)

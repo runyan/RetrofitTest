@@ -37,7 +37,7 @@ public class Util {
     public static Service getService(Context context) {
         File cacheFile = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
-        OkHttpClient client = new OkHttpClient.Builder().cache(cache).connectTimeout(1, TimeUnit.MINUTES).build();
+        OkHttpClient client = new OkHttpClient.Builder().cache(cache).connectTimeout(30, TimeUnit.SECONDS).build();
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://www.tngou.net").client(client)
                 .addConverterFactory(GsonConverterFactory.create()).build();
        return retrofit.create(Service.class);
@@ -84,7 +84,7 @@ public class Util {
     }
 
     public static List<Favourite> searchFavorite(Context context, String name) {
-        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getDB(context);
         List<Favourite> favouriteList = new ArrayList<>();
         Favourite favourite;
         Cursor cursor = db.rawQuery("select * from Favourite where nick_name like ?", new String[]{"%" + name + "%"});
@@ -109,7 +109,7 @@ public class Util {
     public static List<Favourite> getFavouriteList(Context context) {
         List<Favourite> favouriteList = new ArrayList<>();
         Favourite favourite;
-        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getDB(context);
         Cursor cursor = db.query("Favourite", null, null, null, null, null, null);
         if(cursor.moveToFirst()) {
             do {
@@ -130,21 +130,21 @@ public class Util {
     }
 
     public static boolean exist(Context context, int id) {
-        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
-        Cursor cursor = db.rawQuery("select * from Favourite where id = ?", new String[]{String.valueOf(id)});
-        boolean exists = cursor.moveToNext();
+        SQLiteDatabase db = DBHelper.getDB(context);
+        Cursor cursor = db.rawQuery("select * from Favourite where id=?", new String[]{String.valueOf(id)});
+        boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
     }
 
     public static boolean delete(Context context, int id) {
-        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getDB(context);
         int rowsAffected = db.delete("Favourite", "id=?", new String[]{String.valueOf(id)});
         return rowsAffected > 0;
     }
 
     public static boolean save(Context context, int id, String nickName, String imgPath) {
-        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getDB(context);
         ContentValues values = new ContentValues();
         values.put("id", id);
         values.put("create_date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()));
@@ -155,7 +155,7 @@ public class Util {
     }
 
     public static boolean update(Context context, int id, String newName) {
-        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        SQLiteDatabase db = DBHelper.getDB(context);
         ContentValues values = new ContentValues();
         values.put("nick_name", newName);
         int rowsAffected = db.update("Favourite", values, "id=?", new String[]{String.valueOf(id)});
