@@ -13,16 +13,29 @@ import android.widget.Toast;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Favourite;
+import com.example.jinfei.retrofittest.myInterface.UIListener;
 import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
 import java.util.List;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class FourthActivity extends AppCompatActivity {
 
-    private RecyclerView lv;
-    private TextView tv;
-    private RelativeLayout mainLayout;
+    @BindView(R.id.favorite_list)
+    RecyclerView lv;
+    @BindView(R.id.no_favorite)
+    TextView tv;
+    @BindView(R.id.main_layout)
+    RelativeLayout mainLayout;
+    @BindView(R.id.search_favorite)
+    SearchView searchFavorite;
+
+    @BindString((R.string.not_found))
+    String notFound;
 
     private List<Favourite> favouriteList;
 
@@ -32,13 +45,15 @@ public class FourthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fourth);
-        lv = (RecyclerView) findViewById(R.id.favorite_list);
-        tv = (TextView) findViewById(R.id.no_favorite);
-        mainLayout = (RelativeLayout) findViewById(R.id.main_layout);
-        final SearchView searchFavorite = (SearchView) findViewById(R.id.search_favorite);
+        ButterKnife.bind(this);
         favouriteList = Util.getFavouriteList(FourthActivity.this);
         checkList();
-        adapter = new MyRecyclerViewAdapter(FourthActivity.this, favouriteList, "favorite");
+        adapter = new MyRecyclerViewAdapter(FourthActivity.this, favouriteList, "favorite", new UIListener() {
+            @Override
+            public void onDataChange() {
+                checkList();
+            }
+        });
         lv.setAdapter(adapter);
         lv.setLayoutManager(new LinearLayoutManager(FourthActivity.this));
         lv.addItemDecoration(new RecyclerViewDivider(FourthActivity.this, LinearLayout.HORIZONTAL, R.drawable.divider));
@@ -50,7 +65,7 @@ public class FourthActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 List<Favourite> searchResult = Util.searchFavorite(FourthActivity.this, query);
                 if(searchResult.isEmpty()) {
-                    Toast.makeText(FourthActivity.this, getResources().getString(R.string.not_found),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FourthActivity.this, notFound,Toast.LENGTH_SHORT).show();
                 } else {
                     adapter = new MyRecyclerViewAdapter(FourthActivity.this, searchResult, "favorite");
                     lv.setAdapter(adapter);
@@ -70,7 +85,7 @@ public class FourthActivity extends AppCompatActivity {
         });
     }
 
-    private void checkList() {
+    public void checkList() {
         if(favouriteList.isEmpty()) {
             tv.setVisibility(View.VISIBLE);
             mainLayout.setVisibility(View.INVISIBLE);

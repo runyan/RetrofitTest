@@ -154,4 +154,12 @@ public class Util {
         return rowAffected > 0;
     }
 
+    public static boolean update(Context context, int id, String newName) {
+        SQLiteDatabase db = new DBHelper(context, "Menu.db", null, 1).getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("nick_name", newName);
+        int rowAffected = db.update("Favourite", values, "id=?", new String[]{String.valueOf(id)});
+        return rowAffected > 0;
+    }
+
 }

@@ -28,4 +28,7 @@
     <string name="favorite_fail">收藏失败</string>
     <string name="unfavorite_success">取消收藏成功</string>
     <string name="unfavorite_fail">取消收藏失败</string>
+    <string name="update_success">更新成功</string>
+    <string name="update_fail">更新失败</string>
+    <string name="un_favorite">取消收藏</string>
 </resources>

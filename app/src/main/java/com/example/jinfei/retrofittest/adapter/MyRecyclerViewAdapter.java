@@ -1,10 +1,13 @@
 package com.example.jinfei.retrofittest.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,6 +17,7 @@ import com.example.jinfei.retrofittest.R;
 import com.example.jinfei.retrofittest.SecondActivity;
 import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.Favourite;
+import com.example.jinfei.retrofittest.myInterface.UIListener;
 import com.example.jinfei.retrofittest.util.Util;
 
 import java.util.Collection;
@@ -21,17 +25,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.RecyclerViewHolder> {
 
     private List list;
     private Context context;
     private String type;
+    private UIListener listener;
 
 
     public MyRecyclerViewAdapter(Context context, List list, String type) {
         this.context = context;
         this.list = list;
         this.type = type;
+    }
+
+    public MyRecyclerViewAdapter(Context context, List list, String type, UIListener listener) {
+        this.context = context;
+        this.list = list;
+        this.type = type;
+        this.listener = listener;
     }
 
     private void setLayout(RecyclerViewHolder holder, String title, String content, String imagePath, final int id) {
@@ -41,7 +56,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         holder.item_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(null != list) {
+                if (null != list) {
                     Map<String, Object> params = new HashMap<>();
                     params.put("menuId", id);
                     Util.redirect(context, SecondActivity.class, params);
@@ -59,18 +74,69 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-        if("cook".equals(type)) {
+        if ("cook".equals(type)) {
             Cook cook = (Cook) list.get(position);
             setLayout(holder, cook.getName(), cook.getDescription(), cook.getImg(), cook.getId());
-        } else if("favorite".equals(type)) {
+        } else if ("favorite".equals(type)) {
             Favourite favourite = (Favourite) list.get(position);
-            setLayout(holder, favourite.getNickName(), favourite.getCreateDate(), favourite.getImagePath(), favourite.getId());
+            final int p = position;
+            final int id = favourite.getId();
+            final String nickName = favourite.getNickName();
+            setLayout(holder, nickName, favourite.getCreateDate(), favourite.getImagePath(), id);
+            holder.item_view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    final EditText et = new EditText(context);
+                    et.setText(nickName);
+                    et.setSelection(et.getText().toString().length());
+                    new AlertDialog.Builder(context).setTitle(context.getString(R.string.enter_nickname))
+                            .setView(et)
+                            .setCancelable(false)
+                            .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String newName = et.getText().toString();
+                                    if (newName.isEmpty()) {
+                                        Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        boolean updateResult = Util.update(context, id, newName);
+                                        if (updateResult) {
+                                            Toast.makeText(context, context.getString(R.string.update_success), Toast.LENGTH_SHORT).show();
+                                            ((Favourite) list.get(p)).setNickName(newName);
+                                            notifyDataSetChanged();
+                                        } else {
+                                            Toast.makeText(context, context.getString(R.string.update_fail), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setNeutralButton(context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    boolean deleteResult = Util.delete(context, id);
+                                    if(deleteResult) {
+                                        Toast.makeText(context, context.getString(R.string.unfavorite_success), Toast.LENGTH_SHORT).show();
+                                        list.remove(p);
+                                        notifyItemRemoved(p);
+                                        notifyItemRangeChanged(p, getItemCount());
+                                        listener.onDataChange();
+                                    } else {
+                                        Toast.makeText(context, context.getString(R.string.unfavorite_fail), Toast.LENGTH_SHORT).show();
+                                    }
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .show();
+                    return false;
+                }
+            });
         }
     }
 
     @Override
     public int getItemCount() {
-        if(null != list) {
+        if (null != list) {
             return list.size();
         }
         return 0;
@@ -84,17 +150,18 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R.id.item_iv)
         ImageView iv;
+        @BindView(R.id.item_title)
         TextView tv_title;
+        @BindView(R.id.item_info)
         TextView tv_content;
+        @BindView(R.id.item_view)
         LinearLayout item_view;
 
         RecyclerViewHolder(View view) {
             super(view);
-            iv = (ImageView) view.findViewById(R.id.item_iv);
-            tv_title = (TextView) view.findViewById(R.id.item_title);
-            tv_content = (TextView) view.findViewById(R.id.item_info);
-            item_view = (LinearLayout) view.findViewById(R.id.item_view);
+            ButterKnife.bind(this, view);
         }
     }
 }

@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -24,25 +23,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
-    private RecyclerView rv;
-    private LinearLayoutManager mLayoutManager;
+    @BindView(R.id.json_lv)
+    RecyclerView rv;
 
-    private RelativeLayout normalLayout;
-    private RelativeLayout networkErrorLayout;
+    @BindView(R.id.normal_layout)
+    RelativeLayout normalLayout;
 
-    private Button retry;
+    @BindView(R.id.search_view)
+    SearchView search;
+
+    @BindView(R.id.back)
+    FloatingActionButton back;
+
+    @BindString(R.string.first_page)
+    String firstPageStr;
+    @BindString(R.string.next_page)
+    String nextPageStr;
 
     private List<Cook> list;
 
     private int getLastVisiblePosition = 0, lastVisiblePositionY = 0;
 
     private MyRecyclerViewAdapter adapter;
+    private LinearLayoutManager mLayoutManager;
+
     private int pageNum = 1;
 
     private static final String TAG = "MainActivity";
@@ -51,15 +65,10 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         mLayoutManager = new LinearLayoutManager(this);
-        rv = (RecyclerView) findViewById(R.id.json_lv);
         rv.setLayoutManager(mLayoutManager);
         rv.addItemDecoration(new RecyclerViewDivider(MainActivity.this, LinearLayoutManager.HORIZONTAL));
-        retry = (Button) findViewById(R.id.retry);
-        normalLayout = (RelativeLayout) findViewById(R.id.normal_layout);
-        networkErrorLayout = (RelativeLayout) findViewById(R.id.network_error_layout);
-        final SearchView search = (SearchView) findViewById(R.id.search_view);
-        FloatingActionButton back = (FloatingActionButton) findViewById(R.id.back);
         networkCall();
 
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -74,7 +83,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
                         v.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标
                         int y = location[1];
                         if(lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
-                            Toast.makeText(recyclerView.getContext(), getResources().getString(R.string.next_page), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(recyclerView.getContext(), nextPageStr, Toast.LENGTH_SHORT).show();
                                 getLastVisiblePosition = lastVisibleItem;
                                 lastVisiblePositionY = y;
                                 return;
@@ -92,17 +101,6 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               if(pageNum > 1) {
-                   move(false);
-               } else {
-                   Toast.makeText(MainActivity.this, getResources().getString(R.string.first_page), Toast.LENGTH_SHORT).show();
-               }
             }
         });
 
@@ -144,21 +142,26 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
         }, new NetworkError() {
             @Override
             public void onError() {
-                normalLayout.setVisibility(View.GONE);
-                networkErrorLayout.setVisibility(View.VISIBLE);
-                retry.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        networkCall();
-                    }
-                });
+                chooseLayout(true, normalLayout);
             }
         });
     }
 
+    @OnClick(R.id.back)
+    void onBackClick() {
+        if(pageNum > 1) {
+            move(false);
+        } else {
+            Toast.makeText(MainActivity.this, firstPageStr, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void retry() {
+        networkCall();
+    }
+
     private void networkCall() {
-        normalLayout.setVisibility(View.VISIBLE);
-        networkErrorLayout.setVisibility(View.GONE);
+        chooseLayout(false, normalLayout);
         Service service = Util.getService(MainActivity.this);
         Call<Tngou> call = service.getList("cook", 0, pageNum, 20);
         call.enqueue(this);
