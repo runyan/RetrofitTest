@@ -82,6 +82,7 @@ public class FourthActivity extends AppCompatActivity {
                         }
                     });
                     rv.setAdapter(adapter);
+                    rv.setLayoutManager(new LinearLayoutManager(mContext));
                 }
                 return true;
             }
@@ -112,6 +113,7 @@ public class FourthActivity extends AppCompatActivity {
         favouriteList = DBUtil.getFavouriteList();
         adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
         rv.setAdapter(adapter);
+        rv.setLayoutManager(new LinearLayoutManager(mContext));
         checkList(favouriteList);
     }
 

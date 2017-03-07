@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
         ButterKnife.bind(this);
         mContext = MainActivity.this;
         mLayoutManager = new LinearLayoutManager(mContext);
-        rv.setLayoutManager(mLayoutManager);
+
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
         networkCall();
 
@@ -134,6 +134,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
         list = response.body().getList();
         adapter = new MyRecyclerViewAdapter(mContext, list, Type.cook);
         rv.setAdapter(adapter);
+        rv.setLayoutManager(mLayoutManager);
     }
 
     @Override

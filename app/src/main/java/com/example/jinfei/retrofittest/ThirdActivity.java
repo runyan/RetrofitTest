@@ -43,6 +43,8 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
     private Context mContext;
 
+    private List<Cook> list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,6 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
         mContext = ThirdActivity.this;
 
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 6, Color.BLUE));
 
         Intent intent = getIntent();
@@ -65,13 +66,21 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
        if(!response.isSuccessful()) {
           handleError(response.toString());
        } else {
-           List<Cook> list = response.body().getList();
+           list = response.body().getList();
            if(null == list || list.isEmpty()) {
                Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
                finish();
            }
-           rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
        }
+        rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
+        rv.setLayoutManager(new LinearLayoutManager(mContext));
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
+        rv.setLayoutManager(new LinearLayoutManager(mContext));
     }
 
     @Override
