@@ -19,6 +19,7 @@ import com.example.jinfei.retrofittest.entity.Menu;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.myInterface.Service;
+import com.example.jinfei.retrofittest.util.DBUtil;
 import com.example.jinfei.retrofittest.util.Util;
 
 import butterknife.BindString;
@@ -109,7 +110,7 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     }
 
     private void check() {
-        favoriteLayout(Util.exist(id));
+        favoriteLayout(DBUtil.exist(id));
     }
 
     @Override
@@ -184,7 +185,7 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
                         if (nickName.isEmpty()) {
                             Toast.makeText(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT).show();
                         } else {
-                            boolean saveResult = Util.save(id, nickName, imagePath);
+                            boolean saveResult = DBUtil.save(id, nickName, imagePath);
                             String msg = saveResult ? favoriteSuccess : favoriteFail;
                             Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
                             favoriteLayout(saveResult);
@@ -197,7 +198,7 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
     @OnClick(R.id.un_favorite)
     void unFavorite() {
-        boolean deleteResult = Util.delete(id);
+        boolean deleteResult = DBUtil.delete(id);
         String msg = deleteResult ? unFavoriteSuccess : unFavoriteFail;
         Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
         favoriteLayout(!deleteResult);

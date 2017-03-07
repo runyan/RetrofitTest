@@ -52,7 +52,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
         mContext = ThirdActivity.this;
 
         rv.setLayoutManager(new LinearLayoutManager(mContext));
-        rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 4, Color.BLUE));
+        rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 6, Color.BLUE));
 
         Intent intent = getIntent();
         name = intent.getStringExtra("name");

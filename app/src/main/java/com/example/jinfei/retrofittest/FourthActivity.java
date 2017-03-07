@@ -1,8 +1,8 @@
 package com.example.jinfei.retrofittest;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.myInterface.UIListener;
-import com.example.jinfei.retrofittest.util.Util;
+import com.example.jinfei.retrofittest.util.DBUtil;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class FourthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fourth);
         ButterKnife.bind(this);
         mContext = FourthActivity.this;
-        favouriteList = Util.getFavouriteList();
+        favouriteList = DBUtil.getFavouriteList();
         checkList(favouriteList);
         adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite", new UIListener() {
             @Override
@@ -69,7 +69,7 @@ public class FourthActivity extends AppCompatActivity {
         searchFavorite.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                final List<Favourite> searchResult = Util.searchFavorite(query);
+                final List<Favourite> searchResult = DBUtil.searchFavorite(query);
                 if(searchResult.isEmpty()) {
                     Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
                 } else {
@@ -108,7 +108,7 @@ public class FourthActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        favouriteList = Util.getFavouriteList();
+        favouriteList = DBUtil.getFavouriteList();
         adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite");
         rv.setAdapter(adapter);
         checkList(favouriteList);

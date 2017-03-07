@@ -18,6 +18,7 @@ import com.example.jinfei.retrofittest.SecondActivity;
 import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.myInterface.UIListener;
+import com.example.jinfei.retrofittest.util.DBUtil;
 import com.example.jinfei.retrofittest.util.Util;
 
 import java.util.Collection;
@@ -34,7 +35,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     private Context context;
     private String type;
     private UIListener listener;
-
 
     public MyRecyclerViewAdapter(Context context, List list, String type) {
         this.context = context;
@@ -80,9 +80,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         } else if ("favorite".equals(type)) {
             Favourite favourite = (Favourite) list.get(position);
             final int tempPosition = position;
-            final int id = favourite.getDishId();
+            final int dishId = favourite.getDishId();
             final String nickName = favourite.getNickName();
-            setLayout(holder, nickName, favourite.getCreateDate(), favourite.getImagePath(), id);
+            setLayout(holder, nickName, favourite.getCreateDate(), favourite.getImagePath(), dishId);
             holder.item_view.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -99,7 +99,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                                     if (newName.isEmpty()) {
                                         Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
                                     } else {
-                                        boolean updateResult = Util.update(id, newName);
+                                        boolean updateResult = DBUtil.update(dishId, newName);
                                         String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
                                         if (updateResult) {
                                             ((Favourite) list.get(tempPosition)).setNickName(newName);
@@ -113,7 +113,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                             .setNeutralButton(context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    boolean deleteResult = Util.delete(id);
+                                    boolean deleteResult = DBUtil.delete(dishId);
                                     String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
                                     if(deleteResult) {
                                         list.remove(tempPosition);
@@ -136,13 +136,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public int getItemCount() {
-        if (null != list) {
-            return list.size();
-        }
-        return 0;
+        return list.size();
     }
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     public void addAll(Collection<? extends Cook> collection) {
         list.addAll(collection);
         notifyDataSetChanged();
