@@ -28,19 +28,15 @@ public class DBHelper extends SQLiteOpenHelper {
         if(null == dbHelper) {
             dbHelper = new DBHelper(context, "Menu.db", null, 1);
         }
-        if(mOpenCounter.incrementAndGet() == 1) {
+        if(mOpenCounter.incrementAndGet() <= 1) {
             database = dbHelper.getWritableDatabase();
         }
         return database;
     }
 
     public static void closeDB() {
-        if(mOpenCounter.decrementAndGet() == 0) {
+        if(mOpenCounter.decrementAndGet() <= 0) {
             database.close();
-            database = null;
-        }
-        if(mOpenCounter.intValue() < 0) {
-            mOpenCounter = new AtomicInteger(0);
         }
     }
 
