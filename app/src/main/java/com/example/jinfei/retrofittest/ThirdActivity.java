@@ -16,6 +16,7 @@ import com.example.jinfei.retrofittest.entity.Tngou;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.myInterface.Service;
+import com.example.jinfei.retrofittest.myenum.Type;
 import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
@@ -69,7 +70,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
                Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
                finish();
            }
-           rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, "cook"));
+           rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
        }
     }
 

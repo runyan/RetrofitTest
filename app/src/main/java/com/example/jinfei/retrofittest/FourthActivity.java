@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.myInterface.UIListener;
+import com.example.jinfei.retrofittest.myenum.Type;
 import com.example.jinfei.retrofittest.util.DBUtil;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
@@ -52,7 +53,7 @@ public class FourthActivity extends AppCompatActivity {
         mContext = FourthActivity.this;
         favouriteList = DBUtil.getFavouriteList();
         checkList(favouriteList);
-        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite", new UIListener() {
+        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
             @Override
             public void onDataChange() {
                 if(null != favouriteList) {
@@ -74,7 +75,7 @@ public class FourthActivity extends AppCompatActivity {
                     Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
                 } else {
                     searchFavorite.clearFocus();
-                    adapter = new MyRecyclerViewAdapter(mContext, searchResult, "favorite", new UIListener() {
+                    adapter = new MyRecyclerViewAdapter(mContext, searchResult, Type.favorite, new UIListener() {
                         @Override
                         public void onDataChange() {
                             onRestart();
@@ -89,7 +90,7 @@ public class FourthActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if(newText.isEmpty()) {
                     searchFavorite.clearFocus();
-                    adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite");
+                    adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
                     rv.setAdapter(adapter);
                 }
                 return true;
@@ -109,7 +110,7 @@ public class FourthActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         favouriteList = DBUtil.getFavouriteList();
-        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite");
+        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
         rv.setAdapter(adapter);
         checkList(favouriteList);
     }

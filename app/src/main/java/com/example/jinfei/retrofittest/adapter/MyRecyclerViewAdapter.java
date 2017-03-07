@@ -18,6 +18,7 @@ import com.example.jinfei.retrofittest.SecondActivity;
 import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.myInterface.UIListener;
+import com.example.jinfei.retrofittest.myenum.Type;
 import com.example.jinfei.retrofittest.util.DBUtil;
 import com.example.jinfei.retrofittest.util.Util;
 
@@ -33,16 +34,16 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     private List list;
     private Context context;
-    private String type;
+    private Type type;
     private UIListener listener;
 
-    public MyRecyclerViewAdapter(Context context, List list, String type) {
+    public MyRecyclerViewAdapter(Context context, List list, Type type) {
         this.context = context;
         this.list = list;
         this.type = type;
     }
 
-    public MyRecyclerViewAdapter(Context context, List list, String type, UIListener listener) {
+    public MyRecyclerViewAdapter(Context context, List list, Type type, UIListener listener) {
         this.context = context;
         this.list = list;
         this.type = type;
@@ -74,63 +75,71 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
 
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, int position) {
-        if ("cook".equals(type)) {
-            Cook cook = (Cook) list.get(position);
-            setLayout(holder, cook.getName(), cook.getDescription(), cook.getImg(), cook.getId());
-        } else if ("favorite".equals(type)) {
-            Favourite favourite = (Favourite) list.get(position);
-            final int tempPosition = position;
-            final int dishId = favourite.getDishId();
-            final String nickName = favourite.getNickName();
-            setLayout(holder, nickName, favourite.getCreateDate(), favourite.getImagePath(), dishId);
-            holder.item_view.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    final EditText et = new EditText(context);
-                    et.setText(nickName);
-                    et.setSelection(et.getText().toString().length());
-                    new AlertDialog.Builder(context).setTitle(context.getString(R.string.enter_nickname))
-                            .setView(et)
-                            .setCancelable(false)
-                            .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    String newName = et.getText().toString();
-                                    if (newName.isEmpty()) {
-                                        Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        boolean updateResult = DBUtil.update(dishId, newName);
-                                        String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
-                                        if (updateResult) {
-                                            ((Favourite) list.get(tempPosition)).setNickName(newName);
-                                            notifyDataSetChanged();
+        switch (type) {
+            case cook: {
+                Cook cook = (Cook) list.get(position);
+                setLayout(holder, cook.getName(), cook.getDescription(), cook.getImg(), cook.getId());
+                break;
+            }
+            case favorite: {
+                Favourite favourite = (Favourite) list.get(position);
+                final int tempPosition = position;
+                final int dishId = favourite.getDishId();
+                final String nickName = favourite.getNickName();
+                setLayout(holder, nickName, favourite.getCreateDate(), favourite.getImagePath(), dishId);
+                holder.item_view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        final EditText et = new EditText(context);
+                        et.setText(nickName);
+                        et.setSelection(et.getText().toString().length());
+                        new AlertDialog.Builder(context).setTitle(context.getString(R.string.enter_nickname))
+                                .setView(et)
+                                .setCancelable(false)
+                                .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String newName = et.getText().toString();
+                                        if (newName.isEmpty()) {
+                                            Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            boolean updateResult = DBUtil.update(dishId, newName);
+                                            String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
+                                            if (updateResult) {
+                                                ((Favourite) list.get(tempPosition)).setNickName(newName);
+                                                notifyDataSetChanged();
+                                            }
+                                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                        }
+                                        dialogInterface.dismiss();
+                                    }
+                                })
+                                .setNeutralButton(context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        boolean deleteResult = DBUtil.delete(dishId);
+                                        String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
+                                        if (deleteResult) {
+                                            list.remove(tempPosition);
+                                            notifyItemRemoved(tempPosition);
+                                            notifyItemRangeChanged(tempPosition, getItemCount());
+                                            if (null != listener) {
+                                                listener.onDataChange();
+                                            }
                                         }
                                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                        dialogInterface.dismiss();
                                     }
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                            .setNeutralButton(context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    boolean deleteResult = DBUtil.delete(dishId);
-                                    String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
-                                    if(deleteResult) {
-                                        list.remove(tempPosition);
-                                        notifyItemRemoved(tempPosition);
-                                        notifyItemRangeChanged(tempPosition, getItemCount());
-                                        if(null != listener) {
-                                            listener.onDataChange();
-                                        }
-                                    }
-                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                            .show();
-                    return false;
-                }
-            });
+                                })
+                                .show();
+                        return false;
+                    }
+                });
+                break;
+            }
+            default: {
+                break;
+            }
         }
     }
 

@@ -17,6 +17,7 @@ import com.example.jinfei.retrofittest.entity.Tngou;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.myInterface.Service;
+import com.example.jinfei.retrofittest.myenum.Type;
 import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
@@ -131,7 +132,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
     @Override
     public void onResponse(Call<Tngou> call, Response<Tngou> response) {
         list = response.body().getList();
-        adapter = new MyRecyclerViewAdapter(mContext, list, "cook");
+        adapter = new MyRecyclerViewAdapter(mContext, list, Type.cook);
         rv.setAdapter(adapter);
     }
 
