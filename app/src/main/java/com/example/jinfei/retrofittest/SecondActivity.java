@@ -109,8 +109,7 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     }
 
     private void check() {
-        boolean exists = Util.exist(mContext, id);
-        favoriteLayout(exists);
+        favoriteLayout(Util.exist(id));
     }
 
     @Override
@@ -185,10 +184,10 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
                         if (nickName.isEmpty()) {
                             Toast.makeText(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT).show();
                         } else {
-                            boolean saveResult = Util.save(SecondActivity.this, id, nickName, imagePath);
+                            boolean saveResult = Util.save(id, nickName, imagePath);
                             String msg = saveResult ? favoriteSuccess : favoriteFail;
                             Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-                            favoriteLayout(true);
+                            favoriteLayout(saveResult);
                         }
                         dialog.dismiss();
                     }
@@ -198,10 +197,10 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
     @OnClick(R.id.un_favorite)
     void unFavorite() {
-        boolean deleteResult = Util.delete(mContext, id);
+        boolean deleteResult = Util.delete(id);
         String msg = deleteResult ? unFavoriteSuccess : unFavoriteFail;
         Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-        favoriteLayout(false);
+        favoriteLayout(!deleteResult);
     }
 
     private void favoriteLayout(boolean favorite) {

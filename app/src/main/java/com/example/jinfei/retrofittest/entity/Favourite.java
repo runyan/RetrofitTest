@@ -1,8 +1,12 @@
 package com.example.jinfei.retrofittest.entity;
 
-public class Favourite {
+import org.litepal.annotation.Column;
+import org.litepal.crud.DataSupport;
 
-    private int id;
+public class Favourite extends DataSupport {
+
+    @Column(unique = true)
+    private int dishId;
     private String nickName;
     private String createDate;
     private String imagePath;
@@ -15,12 +19,12 @@ public class Favourite {
         this.imagePath = imagePath;
     }
 
-    public int getId() {
-        return id;
+    public int getDishId() {
+        return dishId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDishId(int dishId) {
+        this.dishId = dishId;
     }
 
     public String getNickName() {

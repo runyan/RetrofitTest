@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +80,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         } else if ("favorite".equals(type)) {
             Favourite favourite = (Favourite) list.get(position);
             final int tempPosition = position;
-            final int id = favourite.getId();
+            final int id = favourite.getDishId();
             final String nickName = favourite.getNickName();
             setLayout(holder, nickName, favourite.getCreateDate(), favourite.getImagePath(), id);
             holder.item_view.setOnLongClickListener(new View.OnLongClickListener() {
@@ -100,7 +99,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                                     if (newName.isEmpty()) {
                                         Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
                                     } else {
-                                        boolean updateResult = Util.update(context, id, newName);
+                                        boolean updateResult = Util.update(id, newName);
                                         String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
                                         if (updateResult) {
                                             ((Favourite) list.get(tempPosition)).setNickName(newName);
@@ -114,7 +113,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                             .setNeutralButton(context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    boolean deleteResult = Util.delete(context, id);
+                                    boolean deleteResult = Util.delete(id);
                                     String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
                                     if(deleteResult) {
                                         list.remove(tempPosition);

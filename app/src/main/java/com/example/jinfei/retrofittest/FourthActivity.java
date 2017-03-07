@@ -50,7 +50,7 @@ public class FourthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fourth);
         ButterKnife.bind(this);
         mContext = FourthActivity.this;
-        favouriteList = Util.getFavouriteList(mContext);
+        favouriteList = Util.getFavouriteList();
         checkList(favouriteList);
         adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite", new UIListener() {
             @Override
@@ -69,7 +69,7 @@ public class FourthActivity extends AppCompatActivity {
         searchFavorite.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                final List<Favourite> searchResult = Util.searchFavorite(mContext, query);
+                final List<Favourite> searchResult = Util.searchFavorite(query);
                 if(searchResult.isEmpty()) {
                     Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
                 } else {
@@ -108,7 +108,7 @@ public class FourthActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        favouriteList = Util.getFavouriteList(mContext);
+        favouriteList = Util.getFavouriteList();
         adapter = new MyRecyclerViewAdapter(mContext, favouriteList, "favorite");
         rv.setAdapter(adapter);
         checkList(favouriteList);

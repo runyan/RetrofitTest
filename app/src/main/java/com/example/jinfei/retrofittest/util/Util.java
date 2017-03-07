@@ -2,12 +2,9 @@ package com.example.jinfei.retrofittest.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.widget.ImageView;
 
 import com.example.jinfei.retrofittest.entity.Favourite;
@@ -17,10 +14,11 @@ import com.example.jinfei.retrofittest.R;
 import com.example.jinfei.retrofittest.myInterface.Service;
 import com.squareup.picasso.Picasso;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -83,83 +81,35 @@ public class Util {
         context.startActivity(intent);
     }
 
-    public static List<Favourite> searchFavorite(Context context, String name) {
-        SQLiteDatabase db = DBHelper.getDB(context);
-        List<Favourite> favouriteList = new ArrayList<>();
-        Favourite favourite;
-        Cursor cursor = db.rawQuery("select * from Favourite where nick_name like ?", new String[]{"%" + name + "%"});
-        if(cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(cursor.getColumnIndex("id"));
-                String nickName = cursor.getString(cursor.getColumnIndex("nick_name"));
-                String createDate = cursor.getString(cursor.getColumnIndex("create_date"));
-                String imagePath = cursor.getString(cursor.getColumnIndex("image_path"));
-                favourite = new Favourite();
-                favourite.setId(id);
-                favourite.setNickName(nickName);
-                favourite.setCreateDate(createDate);
-                favourite.setImagePath(imagePath);
-                favouriteList.add(favourite);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return favouriteList;
+    public static List<Favourite> searchFavorite(String name) {
+        return DataSupport.where("nickName like ?", "%" + name + "%").order("createDate desc").find(Favourite.class);
     }
 
-    public static List<Favourite> getFavouriteList(Context context) {
-        List<Favourite> favouriteList = new ArrayList<>();
-        Favourite favourite;
-        SQLiteDatabase db = DBHelper.getDB(context);
-        Cursor cursor = db.query("Favourite", null, null, null, null, null, null);
-        if(cursor.moveToFirst()) {
-            do {
-                favourite = new Favourite();
-                int id = cursor.getInt(cursor.getColumnIndex("id"));
-                String nickName = cursor.getString(cursor.getColumnIndex("nick_name"));
-                String createDate = cursor.getString(cursor.getColumnIndex("create_date"));
-                String imagePath = cursor.getString(cursor.getColumnIndex("image_path"));
-                favourite.setId(id);
-                favourite.setNickName(nickName);
-                favourite.setCreateDate(createDate);
-                favourite.setImagePath(imagePath);
-                favouriteList.add(favourite);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return favouriteList;
+    public static List<Favourite> getFavouriteList() {
+        return DataSupport.where().order("createDate desc").find(Favourite.class);
     }
 
-    public static boolean exist(Context context, int id) {
-        SQLiteDatabase db = DBHelper.getDB(context);
-        Cursor cursor = db.rawQuery("select * from Favourite where id=?", new String[]{String.valueOf(id)});
-        boolean exists = cursor.getCount() > 0;
-        cursor.close();
-        return exists;
+    public static boolean exist(int dishId) {
+        return !DataSupport.where("dishId = ?", String.valueOf(dishId)).find(Favourite.class).isEmpty();
     }
 
-    public static boolean delete(Context context, int id) {
-        SQLiteDatabase db = DBHelper.getDB(context);
-        int rowsAffected = db.delete("Favourite", "id=?", new String[]{String.valueOf(id)});
-        return rowsAffected > 0;
+    public static boolean delete(int dishId) {
+        return DataSupport.deleteAll(Favourite.class, "dishId = ?", String.valueOf(dishId)) > 0;
     }
 
-    public static boolean save(Context context, int id, String nickName, String imgPath) {
-        SQLiteDatabase db = DBHelper.getDB(context);
-        ContentValues values = new ContentValues();
-        values.put("id", id);
-        values.put("create_date", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()));
-        values.put("nick_name", nickName);
-        values.put("image_path", imgPath);
-        long insertedRowID = db.insert("Favourite", null, values);
-        return insertedRowID > 0;
+    public static boolean save(int dishId, String nickName, String imgPath) {
+        Favourite favourite = new Favourite();
+        favourite.setDishId(dishId);
+        favourite.setCreateDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(new Date()));
+        favourite.setNickName(nickName);
+        favourite.setImagePath(imgPath);
+        return favourite.save();
     }
 
-    public static boolean update(Context context, int id, String newName) {
-        SQLiteDatabase db = DBHelper.getDB(context);
-        ContentValues values = new ContentValues();
-        values.put("nick_name", newName);
-        int rowsAffected = db.update("Favourite", values, "id=?", new String[]{String.valueOf(id)});
-        return rowsAffected > 0;
+    public static boolean update(int dishId, String newName) {
+        Favourite favourite = new Favourite();
+        favourite.setNickName(newName);
+        return favourite.updateAll("dishId = ?", String.valueOf(dishId)) > 0;
     }
 
 }
