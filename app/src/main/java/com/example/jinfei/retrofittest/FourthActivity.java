@@ -93,6 +93,7 @@ public class FourthActivity extends AppCompatActivity {
                     searchFavorite.clearFocus();
                     adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
                     rv.setAdapter(adapter);
+                    rv.setLayoutManager(new LinearLayoutManager(mContext));
                 }
                 return true;
             }
