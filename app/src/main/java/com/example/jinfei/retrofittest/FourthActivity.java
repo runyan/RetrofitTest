@@ -1,6 +1,7 @@
 package com.example.jinfei.retrofittest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -78,7 +79,12 @@ public class FourthActivity extends AppCompatActivity {
                     adapter = new MyRecyclerViewAdapter(mContext, searchResult, Type.favorite, new UIListener() {
                         @Override
                         public void onDataChange() {
-                            onRestart();
+                            rv.invalidate();
+                            if(searchResult.isEmpty()) {
+                                startActivity(new Intent(mContext, FourthActivity.class));
+                                overridePendingTransition(0, 0);
+                                finish();
+                            }
                         }
                     });
                     rv.setAdapter(adapter);
@@ -91,9 +97,7 @@ public class FourthActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if(newText.isEmpty()) {
                     searchFavorite.clearFocus();
-                    adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
-                    rv.setAdapter(adapter);
-                    rv.setLayoutManager(new LinearLayoutManager(mContext));
+                    rv.invalidate();
                 }
                 return true;
             }
@@ -111,10 +115,8 @@ public class FourthActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+        rv.invalidate();
         favouriteList = DBUtil.getFavouriteList();
-        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
-        rv.setAdapter(adapter);
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
         checkList(favouriteList);
     }
 
