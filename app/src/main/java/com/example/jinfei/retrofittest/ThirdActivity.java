@@ -28,6 +28,11 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
+
 
 public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
@@ -53,6 +58,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
         ButterKnife.bind(this);
 
         mContext = ThirdActivity.this;
+        mDialog = Util.getLoadingDialog(mContext);
 
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 6, Color.BLUE));
 
@@ -110,6 +116,33 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
     private void networkCall(String name) {
         chooseLayout(false, rv);
         Service service = Util.getService(mContext);
+        subscription = service.getRxDishes(name)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mDialog.show();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())//显示Dialog在主线程中
+                .observeOn(AndroidSchedulers.mainThread())//显示数据在主线程
+                .subscribe(new Subscriber<Tngou>() {
+                    @Override
+                    public void onCompleted() {
+                        mDialog.cancel();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mDialog.cancel();
+                        handleError(e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Tngou tngou) {
+
+                    }
+                });
         Call<Tngou> call = service.getDishes(name);
         call.enqueue(this);
     }

@@ -1,5 +1,6 @@
 package com.example.jinfei.retrofittest;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.example.jinfei.retrofittest.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -23,6 +25,10 @@ public class BaseActivity extends AppCompatActivity {
     Button retry;
     @BindView(R.id.network_error_layout)
     RelativeLayout networkErrorLayout;
+
+    ProgressDialog mDialog;
+
+    protected Subscription subscription;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
@@ -58,5 +64,13 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (subscription != null && !subscription.isUnsubscribed()) {//isUnsubscribed 是否取消订阅
+            subscription.unsubscribe();//取消网络请求
+        }
     }
 }

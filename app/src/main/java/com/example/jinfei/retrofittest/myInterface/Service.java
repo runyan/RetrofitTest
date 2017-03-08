@@ -8,6 +8,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import rx.Observable;
 
 public interface Service {
 
@@ -15,9 +16,18 @@ public interface Service {
     @GET("/api/{category}/list")
     Call<Tngou> getList(@Path("category") String path, @Query("id") int id, @Query("page") int page, @Query("rows") int rows);
     @Headers("Cache-Control: public, max-age=3600")
+    @GET("/api/{category}/list")
+    Observable<Tngou> getRxList(@Path("category") String path, @Query("id") int id, @Query("page") int page, @Query("rows") int rows);
+    @Headers("Cache-Control: public, max-age=3600")
     @GET("/api/cook/show/")
     Call<Menu> getMenu(@Query("id") int id);
     @Headers("Cache-Control: public, max-age=3600")
+    @GET("/api/cook/show/")
+    Observable<Menu> getRxMenu(@Query("id") int id);
+    @Headers("Cache-Control: public, max-age=3600")
     @GET("/api/cook/name/")
     Call<Tngou> getDishes(@Query("name") String name);
+    @Headers("Cache-Control: public, max-age=3600")
+    @GET("/api/cook/name/")
+    Observable<Tngou> getRxDishes(@Query("name") String name);
 }

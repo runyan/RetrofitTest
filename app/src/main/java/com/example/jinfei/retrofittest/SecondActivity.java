@@ -3,8 +3,8 @@ package com.example.jinfei.retrofittest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.util.Log;
@@ -29,6 +29,10 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
@@ -101,6 +105,7 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
         setContentView(R.layout.activity_second);
         ButterKnife.bind(this);
         mContext = SecondActivity.this;
+        mDialog = Util.getLoadingDialog(mContext);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("menuId", 0);
@@ -147,6 +152,33 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     private void networkCall() {
         chooseLayout(false, mainLayout);
         Service service = Util.getService(mContext);
+        subscription = service.getRxMenu(id)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mDialog.show();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())//显示Dialog在主线程中
+                .observeOn(AndroidSchedulers.mainThread())//显示数据在主线程
+                .subscribe(new Subscriber<Menu>() {
+                    @Override
+                    public void onCompleted() {
+                        mDialog.cancel();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mDialog.cancel();
+                        handleError(e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Menu tngou) {
+
+                    }
+                });
         Call<Menu> call = service.getMenu(id);
         call.enqueue(this);
     }

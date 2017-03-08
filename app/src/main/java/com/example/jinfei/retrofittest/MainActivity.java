@@ -32,6 +32,10 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
@@ -71,6 +75,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mContext = MainActivity.this;
+        mDialog = Util.getLoadingDialog(mContext);
         mLayoutManager = new LinearLayoutManager(mContext);
 
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
@@ -78,20 +83,21 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int lastVisibleItem;
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if(lastVisibleItem + 2 >= mLayoutManager.getItemCount()) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (lastVisibleItem + 2 >= mLayoutManager.getItemCount()) {
                         View v = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
                         int[] location = new int[2];
                         v.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标
                         int y = location[1];
-                        if(lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
+                        if (lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
                             Toast.makeText(recyclerView.getContext(), nextPageStr, Toast.LENGTH_SHORT).show();
-                                getLastVisiblePosition = lastVisibleItem;
-                                lastVisiblePositionY = y;
-                                return;
+                            getLastVisiblePosition = lastVisibleItem;
+                            lastVisiblePositionY = y;
+                            return;
                         } else if (lastVisibleItem == getLastVisiblePosition
                                 && lastVisiblePositionY == y) { //第二次拖至底部
                             move(true);
@@ -140,22 +146,12 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
     @Override
     public void onFailure(Call<Tngou> call, Throwable t) {
         Log.e(TAG, t.toString());
-        Util.showErrorDialog(mContext, new NetworkInterface() {
-            @Override
-            public void call() {
-                networkCall();
-            }
-        }, new NetworkError() {
-            @Override
-            public void onError() {
-                chooseLayout(true, normalLayout);
-            }
-        });
+        error(t);
     }
 
     @OnClick(R.id.back)
     void onBackClick() {
-        if(pageNum > 1) {
+        if (pageNum > 1) {
             move(false);
         } else {
             Toast.makeText(mContext, firstPageStr, Toast.LENGTH_SHORT).show();
@@ -169,8 +165,50 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
     private void networkCall() {
         chooseLayout(false, normalLayout);
         Service service = Util.getService(mContext);
+        subscription = service.getRxList("cook", 0, pageNum, 20)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        mDialog.show();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())//显示Dialog在主线程中
+                .observeOn(AndroidSchedulers.mainThread())//显示数据在主线程
+                .subscribe(new Subscriber<Tngou>() {
+                    @Override
+                    public void onCompleted() {
+                        mDialog.cancel();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mDialog.cancel();
+                        error(e);
+                    }
+
+                    @Override
+                    public void onNext(Tngou tngou) {
+
+                    }
+                });
         Call<Tngou> call = service.getList("cook", 0, pageNum, 20);
         call.enqueue(this);
+    }
+
+    private void error(Throwable e) {
+        Log.e(TAG, e.toString());
+        Util.showErrorDialog(mContext, new NetworkInterface() {
+            @Override
+            public void call() {
+                networkCall();
+            }
+        }, new NetworkError() {
+            @Override
+            public void onError() {
+                chooseLayout(true, normalLayout);
+            }
+        });
     }
 
     private void move(boolean moveUp) {

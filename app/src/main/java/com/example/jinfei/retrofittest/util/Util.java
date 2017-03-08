@@ -2,6 +2,7 @@ package com.example.jinfei.retrofittest.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
 public class Util {
 
@@ -30,6 +32,7 @@ public class Util {
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
         OkHttpClient client = new OkHttpClient.Builder().cache(cache).connectTimeout(30, TimeUnit.SECONDS).build();
         Retrofit retrofit = new Retrofit.Builder().baseUrl("http://www.tngou.net").client(client)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create()).build();
        return retrofit.create(Service.class);
     }
@@ -72,6 +75,14 @@ public class Util {
             }
         }
         context.startActivity(intent);
+    }
+
+    public static ProgressDialog getLoadingDialog(Context context) {
+        ProgressDialog mDialog = new ProgressDialog(context);
+        mDialog.setMessage(context.getResources().getString(R.string.loading));
+        mDialog.setCancelable(false);
+        mDialog.setCanceledOnTouchOutside(false);
+        return mDialog;
     }
 
 }
