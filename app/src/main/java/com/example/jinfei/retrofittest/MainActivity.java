@@ -164,9 +164,13 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
     }
 
     private void networkCall() {
+        Map<String, Integer> options = new HashMap<>();
+        options.put("id", 0);
+        options.put("page", pageNum);
+        options.put("rows", 20);
         chooseLayout(false, normalLayout);
         Service service = Util.getService(mContext);
-        subscription = service.getRxList("cook", 0, pageNum, 20)
+        subscription = service.getRxList("cook", options)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -192,7 +196,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
                     }
                 });
-        Call<Tngou> call = service.getList("cook", 0, pageNum, 20);
+        Call<Tngou> call = service.getList("cook", options);
         call.enqueue(this);
     }
 
