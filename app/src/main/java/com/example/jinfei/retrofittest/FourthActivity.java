@@ -18,6 +18,7 @@ import com.example.jinfei.retrofittest.entity.Favourite;
 import com.example.jinfei.retrofittest.myInterface.UIListener;
 import com.example.jinfei.retrofittest.myenum.Type;
 import com.example.jinfei.retrofittest.util.DBUtil;
+import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
 import java.util.List;
@@ -81,7 +82,7 @@ public class FourthActivity extends AppCompatActivity {
                         public void onDataChange() {
                             rv.invalidate();
                             if(searchResult.isEmpty()) {
-                                startActivity(new Intent(mContext, FourthActivity.class));
+                                Util.redirect(mContext, FourthActivity.class, null);
                                 overridePendingTransition(0, 0);
                                 finish();
                             }

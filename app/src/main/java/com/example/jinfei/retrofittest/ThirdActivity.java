@@ -75,6 +75,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
            list = response.body().getList();
            if(null == list || list.isEmpty()) {
                Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
+               overridePendingTransition(0, 0);
                finish();
            }
        }
@@ -85,8 +86,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
     @Override
     protected void onRestart() {
         super.onRestart();
-        rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
+        rv.invalidate();
     }
 
     @Override
