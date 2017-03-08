@@ -171,7 +171,6 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        handleError(e.toString());
                     }
 
                     @Override

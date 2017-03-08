@@ -135,7 +135,6 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        handleError(e.toString());
                     }
 
                     @Override

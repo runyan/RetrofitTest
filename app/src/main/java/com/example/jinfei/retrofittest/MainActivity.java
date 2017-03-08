@@ -123,6 +123,7 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
                 Map<String, Object> params = new HashMap<>();
                 params.put("name", query);
                 Util.redirect(mContext, ThirdActivity.class, params);
+                overridePendingTransition(0, 0);
                 search.clearFocus();
                 return true;
             }
@@ -184,7 +185,6 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        error(e);
                     }
 
                     @Override
