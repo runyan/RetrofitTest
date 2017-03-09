@@ -15,6 +15,7 @@ import com.example.jinfei.retrofittest.myInterface.Service;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -44,10 +45,11 @@ public class Util {
         Picasso.with(context).load(IMG_URL + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).error(R.mipmap.ic_launcher).into(imageView);
     }
 
-    public static void showErrorDialog(Context context, final NetworkInterface network, final NetworkError networkError) {
+    public static void showErrorDialog(Context context, Throwable e, final NetworkInterface network, final NetworkError networkError) {
+        String msg = (e instanceof IOException) ? context.getResources().getString(R.string.network_error) : e.toString();
         AlertDialog dialog = new AlertDialog.Builder(context).create();
         dialog.setTitle(context.getResources().getString(R.string.error));
-        dialog.setMessage(context.getResources().getString(R.string.network_error));
+        dialog.setMessage(msg);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.reconnect), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

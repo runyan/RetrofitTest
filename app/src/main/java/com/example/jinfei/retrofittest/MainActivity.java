@@ -172,7 +172,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        error(e);
+                        handleError(e);
                     }
 
                     @Override
@@ -185,9 +185,9 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-    private void error(Throwable e) {
+    private void handleError(Throwable e) {
         Log.e(TAG, e.toString());
-        Util.showErrorDialog(mContext, new NetworkInterface() {
+        Util.showErrorDialog(mContext, e, new NetworkInterface() {
             @Override
             public void call() {
                 networkCall();

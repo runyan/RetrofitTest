@@ -70,9 +70,9 @@ public class ThirdActivity extends BaseActivity  {
         rv.invalidate();
     }
 
-    private void handleError(String reason) {
-        Log.e(TAG, reason);
-        Util.showErrorDialog(mContext, new NetworkInterface() {
+    private void handleError(Throwable e) {
+        Log.e(TAG, e.toString());
+        Util.showErrorDialog(mContext, e, new NetworkInterface() {
             @Override
             public void call() {
                 networkCall(name);
@@ -111,7 +111,7 @@ public class ThirdActivity extends BaseActivity  {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        handleError(e.toString());
+                        handleError(e);
                     }
 
                     @Override
