@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity {
                         v.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标
                         int y = location[1];
                         if (lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
-                            showNormalMessage(recyclerView.getContext(), nextPageStr);
+                            showNormalMessage(nextPageStr);
                             getLastVisiblePosition = lastVisibleItem;
                             lastVisiblePositionY = y;
                             return;
@@ -136,7 +136,7 @@ public class MainActivity extends BaseActivity {
         if (pageNum > 1) {
             move(false);
         } else {
-            showNormalMessage(mContext, firstPageStr);
+            showNormalMessage(firstPageStr);
         }
     }
 

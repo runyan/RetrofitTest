@@ -111,7 +111,7 @@ public class ThirdActivity extends BaseActivity  {
                     public void onNext(TngouResponse<List<Cook>> response) {
                         list = response.tngou;
                         if(null == list || list.isEmpty()) {
-                            showNormalMessage(mContext, notFound);
+                            showNormalMessage(notFound);
                             overridePendingTransition(0, 0);
                             finish();
                         }

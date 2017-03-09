@@ -189,7 +189,7 @@ public class SecondActivity extends BaseActivity {
                     Toasty.info(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT, false).show();
                 } else {
                     boolean saveResult = DBUtil.save(id, nickName, imagePath);
-                    showMessage(mContext, saveResult, favoriteSuccess, favoriteFail);
+                    showMessage(saveResult, favoriteSuccess, favoriteFail);
                     favoriteLayout(saveResult);
                 }
                 dialog.dismiss();
@@ -201,7 +201,7 @@ public class SecondActivity extends BaseActivity {
     @OnClick(R.id.un_favorite)
     void unFavorite() {
         boolean deleteResult = DBUtil.delete(id);
-        showMessage(mContext, deleteResult, unFavoriteSuccess, unFavoriteFail);
+        showMessage(deleteResult, unFavoriteSuccess, unFavoriteFail);
         favoriteLayout(!deleteResult);
     }
 

@@ -85,15 +85,15 @@ public class BaseActivity extends AppCompatActivity {
         Util.showErrorDialog(context, e, networkInterface, networkError);
     }
 
-    protected void showMessage(Context context, boolean successful, String successMsg, String failMsg) {
+    protected void showMessage(boolean successful, String successMsg, String failMsg) {
         if(successful) {
-            Toasty.success(context, successMsg, Toast.LENGTH_SHORT, true).show();
+            Toasty.success(getApplicationContext(), successMsg, Toast.LENGTH_SHORT, true).show();
         } else {
-            Toasty.error(context, failMsg, Toast.LENGTH_SHORT, true).show();
+            Toasty.error(getApplicationContext(), failMsg, Toast.LENGTH_SHORT, true).show();
         }
     }
 
-    protected void showNormalMessage(Context context, String msg) {
-        Toasty.info(context, msg, Toast.LENGTH_SHORT, false).show();
+    protected void showNormalMessage(String msg) {
+        Toasty.info(getApplicationContext(), msg, Toast.LENGTH_SHORT, false).show();
     }
 }
