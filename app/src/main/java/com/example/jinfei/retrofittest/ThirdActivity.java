@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Cook;
@@ -112,7 +111,7 @@ public class ThirdActivity extends BaseActivity  {
                     public void onNext(TngouResponse<List<Cook>> response) {
                         list = response.tngou;
                         if(null == list || list.isEmpty()) {
-                            Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
+                            showNormalMessage(mContext, notFound);
                             overridePendingTransition(0, 0);
                             finish();
                         }
