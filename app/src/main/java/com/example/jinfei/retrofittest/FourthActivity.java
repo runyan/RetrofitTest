@@ -25,6 +25,7 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -72,7 +73,7 @@ public class FourthActivity extends AppCompatActivity {
                             public void call(List<Favourite> list) {
                                 final List<Favourite> searchResult = list;
                                 if (searchResult.isEmpty()) {
-                                    Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
+                                    Toasty.info(mContext, notFound, Toast.LENGTH_SHORT,false).show();
                                 } else {
                                     searchFavorite.clearFocus();
                                     adapter = new MyRecyclerViewAdapter(mContext, searchResult, Type.favorite, new UIListener() {
