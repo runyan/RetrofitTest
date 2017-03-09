@@ -1,10 +1,12 @@
 package com.example.jinfei.retrofittest;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.example.jinfei.retrofittest.myInterface.NetworkError;
+import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.util.Util;
 
 import butterknife.BindView;
@@ -72,5 +76,10 @@ public class BaseActivity extends AppCompatActivity {
         if (subscription != null && !subscription.isUnsubscribed()) {//isUnsubscribed 是否取消订阅
             subscription.unsubscribe();//取消网络请求
         }
+    }
+
+    protected void handleError(String tag, Throwable e, Context context, NetworkInterface networkInterface, NetworkError networkError) {
+        Log.e(tag, e.toString());
+        Util.showErrorDialog(context, e, networkInterface, networkError);
     }
 }

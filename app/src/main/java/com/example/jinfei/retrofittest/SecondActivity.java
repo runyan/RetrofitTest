@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -144,7 +143,17 @@ public class SecondActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        handleError(e);
+                        handleError(TAG, e, mContext, new NetworkInterface() {
+                            @Override
+                            public void call() {
+                                networkCall();
+                            }
+                        }, new NetworkError() {
+                            @Override
+                            public void onError() {
+                                chooseLayout(true, mainLayout);
+                            }
+                        });
                     }
 
                     @Override
@@ -161,21 +170,6 @@ public class SecondActivity extends BaseActivity {
                         rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
                     }
                 });
-    }
-
-    private void handleError(Throwable e) {
-        Log.e(TAG, e.toString());
-        Util.showErrorDialog(mContext, e, new NetworkInterface() {
-            @Override
-            public void call() {
-                networkCall();
-            }
-        }, new NetworkError() {
-            @Override
-            public void onError() {
-                chooseLayout(true, mainLayout);
-            }
-        });
     }
 
     public void retry() {

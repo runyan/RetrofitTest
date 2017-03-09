@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -70,26 +69,11 @@ public class ThirdActivity extends BaseActivity  {
         rv.invalidate();
     }
 
-    private void handleError(Throwable e) {
-        Log.e(TAG, e.toString());
-        Util.showErrorDialog(mContext, e, new NetworkInterface() {
-            @Override
-            public void call() {
-                networkCall(name);
-            }
-        }, new NetworkError() {
-            @Override
-            public void onError() {
-                chooseLayout(true, rv);
-            }
-        });
-    }
-
     public void retry() {
         networkCall(name);
     }
 
-    private void networkCall(String name) {
+    private void networkCall(final String name) {
         chooseLayout(false, rv);
         Service service = Util.getService(mContext);
         subscription = service.getRxDishes(name)
@@ -111,7 +95,17 @@ public class ThirdActivity extends BaseActivity  {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        handleError(e);
+                        handleError(TAG, e, mContext, new NetworkInterface() {
+                            @Override
+                            public void call() {
+                                networkCall(name);
+                            }
+                        }, new NetworkError() {
+                            @Override
+                            public void onError() {
+                                chooseLayout(true, rv);
+                            }
+                        });
                     }
 
                     @Override

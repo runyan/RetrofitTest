@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
@@ -172,7 +171,17 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
-                        handleError(e);
+                        handleError(TAG, e, mContext, new NetworkInterface() {
+                            @Override
+                            public void call() {
+                                networkCall();
+                            }
+                        }, new NetworkError() {
+                            @Override
+                            public void onError() {
+                                chooseLayout(true, normalLayout);
+                            }
+                        });
                     }
 
                     @Override
@@ -183,21 +192,6 @@ public class MainActivity extends BaseActivity {
                         rv.setLayoutManager(mLayoutManager);
                     }
                 });
-    }
-
-    private void handleError(Throwable e) {
-        Log.e(TAG, e.toString());
-        Util.showErrorDialog(mContext, e, new NetworkInterface() {
-            @Override
-            public void call() {
-                networkCall();
-            }
-        }, new NetworkError() {
-            @Override
-            public void onError() {
-                chooseLayout(true, normalLayout);
-            }
-        });
     }
 
     private void move(boolean moveUp) {
