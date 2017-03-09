@@ -116,6 +116,8 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
     private void networkCall(String name) {
         chooseLayout(false, rv);
         Service service = Util.getService(mContext);
+        Call<Tngou> call = service.getDishes(name);
+        call.enqueue(this);
         subscription = service.getRxDishes(name)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -142,8 +144,6 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
 
                     }
                 });
-        Call<Tngou> call = service.getDishes(name);
-        call.enqueue(this);
     }
 
 }

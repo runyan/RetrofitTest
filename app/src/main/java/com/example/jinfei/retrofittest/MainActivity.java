@@ -170,6 +170,8 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
         options.put("rows", 20);
         chooseLayout(false, normalLayout);
         Service service = Util.getService(mContext);
+        Call<Tngou> call = service.getList("cook", options);
+        call.enqueue(this);
         subscription = service.getRxList("cook", options)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -196,8 +198,6 @@ public class MainActivity extends BaseActivity implements Callback<Tngou> {
 
                     }
                 });
-        Call<Tngou> call = service.getList("cook", options);
-        call.enqueue(this);
     }
 
     private void error(Throwable e) {

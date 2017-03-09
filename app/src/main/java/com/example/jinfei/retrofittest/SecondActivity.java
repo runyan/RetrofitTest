@@ -152,6 +152,8 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     private void networkCall() {
         chooseLayout(false, mainLayout);
         Service service = Util.getService(mContext);
+        Call<Menu> call = service.getMenu(id);
+        call.enqueue(this);
         subscription = service.getRxMenu(id)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -178,8 +180,6 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
 
                     }
                 });
-        Call<Menu> call = service.getMenu(id);
-        call.enqueue(this);
     }
 
     private void handleError(String reason) {

@@ -16,21 +16,21 @@ import rx.Observable;
 public interface Service {
 
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("/api/{category}/list")
+    @GET("api/{category}/list")
     Call<Tngou> getList(@Path("category") String path, @QueryMap Map<String, Integer> options);
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("/api/{category}/list")
+    @GET("api/{category}/list")
     Observable<Tngou> getRxList(@Path("category") String path, @QueryMap Map<String, Integer> options);
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("/api/cook/show/")
+    @GET("api/cook/show/")
     Call<Menu> getMenu(@Query("id") int id);
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("/api/cook/show/")
+    @GET("api/cook/show/")
     Observable<Menu> getRxMenu(@Query("id") int id);
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("/api/cook/name/")
+    @GET("api/cook/name/")
     Call<Tngou> getDishes(@Query("name") String name);
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("/api/cook/name/")
+    @GET("api/cook/name/")
     Observable<Tngou> getRxDishes(@Query("name") String name);
 }

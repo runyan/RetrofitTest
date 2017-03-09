@@ -27,18 +27,21 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
 public class Util {
 
+    private static final String BASE_URL = "http://www.tngou.net/";
+    private static final String IMG_URL = "http://tnfs.tngou.net/img";
+
     public static Service getService(Context context) {
         File cacheFile = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
         OkHttpClient client = new OkHttpClient.Builder().cache(cache).connectTimeout(30, TimeUnit.SECONDS).build();
-        Retrofit retrofit = new Retrofit.Builder().baseUrl("http://www.tngou.net").client(client)
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).client(client)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create()).build();
        return retrofit.create(Service.class);
     }
 
     public static void setImage(Context context, String imgSrc, ImageView imageView) {
-        Picasso.with(context).load("http://tnfs.tngou.net/img" + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).error(R.mipmap.ic_launcher).into(imageView);
+        Picasso.with(context).load(IMG_URL + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).error(R.mipmap.ic_launcher).into(imageView);
     }
 
     public static void showErrorDialog(Context context, final NetworkInterface network, final NetworkError networkError) {
