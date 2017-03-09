@@ -1,7 +1,6 @@
 package com.example.jinfei.retrofittest;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +25,8 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.functions.Action1;
 
 public class FourthActivity extends AppCompatActivity {
 
@@ -53,16 +54,9 @@ public class FourthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fourth);
         ButterKnife.bind(this);
         mContext = FourthActivity.this;
-        favouriteList = DBUtil.getFavouriteList();
+        populateList();
         checkList(favouriteList);
-        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
-            @Override
-            public void onDataChange() {
-                if(null != favouriteList) {
-                    checkList(favouriteList);
-                }
-            }
-        });
+        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
         rv.setAdapter(adapter);
         rv.setLayoutManager(new LinearLayoutManager(mContext));
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
@@ -72,31 +66,37 @@ public class FourthActivity extends AppCompatActivity {
         searchFavorite.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                final List<Favourite> searchResult = DBUtil.searchFavorite(query);
-                if(searchResult.isEmpty()) {
-                    Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
-                } else {
-                    searchFavorite.clearFocus();
-                    adapter = new MyRecyclerViewAdapter(mContext, searchResult, Type.favorite, new UIListener() {
-                        @Override
-                        public void onDataChange() {
-                            rv.invalidate();
-                            if(searchResult.isEmpty()) {
-                                Util.redirect(mContext, FourthActivity.class, null);
-                                overridePendingTransition(0, 0);
-                                finish();
+                Observable.just(DBUtil.searchFavorite(query))
+                        .subscribe(new Action1<List<Favourite>>() {
+                            @Override
+                            public void call(List<Favourite> list) {
+                                final List<Favourite> searchResult = list;
+                                if (searchResult.isEmpty()) {
+                                    Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    searchFavorite.clearFocus();
+                                    adapter = new MyRecyclerViewAdapter(mContext, searchResult, Type.favorite, new UIListener() {
+                                        @Override
+                                        public void onDataChange() {
+                                            rv.invalidate();
+                                            if (searchResult.isEmpty()) {
+                                                Util.redirect(mContext, FourthActivity.class, null);
+                                                overridePendingTransition(0, 0);
+                                                finish();
+                                            }
+                                        }
+                                    });
+                                    rv.setAdapter(adapter);
+                                    rv.setLayoutManager(new LinearLayoutManager(mContext));
+                                }
                             }
-                        }
-                    });
-                    rv.setAdapter(adapter);
-                    rv.setLayoutManager(new LinearLayoutManager(mContext));
-                }
+                        });
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(newText.isEmpty()) {
+                if (newText.isEmpty()) {
                     searchFavorite.clearFocus();
                     rv.invalidate();
                 }
@@ -117,8 +117,18 @@ public class FourthActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         rv.invalidate();
-        favouriteList = DBUtil.getFavouriteList();
+        populateList();
         checkList(favouriteList);
+    }
+
+    private void populateList() {
+        Observable.just(DBUtil.getFavouriteList())
+                .subscribe(new Action1<List<Favourite>>() {
+                    @Override
+                    public void call(List<Favourite> list) {
+                        favouriteList = list;
+                    }
+                });
     }
 
 }
