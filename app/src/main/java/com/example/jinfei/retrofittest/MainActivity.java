@@ -28,6 +28,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -90,7 +91,7 @@ public class MainActivity extends BaseActivity {
                         v.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标
                         int y = location[1];
                         if (lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
-                            Toast.makeText(recyclerView.getContext(), nextPageStr, Toast.LENGTH_SHORT).show();
+                            showNormalMessage(recyclerView.getContext(), nextPageStr);
                             getLastVisiblePosition = lastVisibleItem;
                             lastVisiblePositionY = y;
                             return;
@@ -137,7 +138,7 @@ public class MainActivity extends BaseActivity {
         if (pageNum > 1) {
             move(false);
         } else {
-            Toast.makeText(mContext, firstPageStr, Toast.LENGTH_SHORT).show();
+            showNormalMessage(mContext, firstPageStr);
         }
     }
 

@@ -28,6 +28,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.RecyclerViewHolder> {
 
@@ -89,7 +90,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                 holder.item_view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-                        final EditText et = Util.getEditText(context, context.getResources().getString(R.string.my_favourite));
+                        final EditText et = Util.getEditText(context, nickName);
                         android.app.AlertDialog dialog = Util.getBasicDialog(context, context.getString(R.string.enter_nickname));
                         dialog.setView(et);
                         dialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
@@ -97,15 +98,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                             public void onClick(DialogInterface dialog, int which) {
                                 String newName = et.getText().toString();
                                 if (newName.isEmpty()) {
-                                    Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
+                                    Toasty.info(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT, false).show();
                                 } else {
                                     boolean updateResult = DBUtil.update(dishId, newName);
-                                    String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
                                     if (updateResult) {
                                         ((Favourite) list.get(tempPosition)).setNickName(newName);
                                         notifyDataSetChanged();
                                     }
-                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                    showMessage(context, updateResult, context.getString(R.string.update_success), context.getString(R.string.update_fail));
                                 }
                                 dialog.dismiss();
                             }
@@ -114,7 +114,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean deleteResult = DBUtil.delete(dishId);
-                                String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
                                 if (deleteResult) {
                                     list.remove(tempPosition);
                                     notifyItemRemoved(tempPosition);
@@ -123,7 +122,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                                         listener.onDataChange();
                                     }
                                 }
-                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                showMessage(context, deleteResult, context.getString(R.string.unfavorite_success), context.getString(R.string.unfavorite_fail));
                                 dialog.dismiss();
                             }
                         });
@@ -148,6 +147,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     public void addAll(Collection<? extends Cook> collection) {
         list.addAll(collection);
         notifyDataSetChanged();
+    }
+
+    private void showMessage(Context context, boolean successful, String successMsg, String failMsg) {
+        if(successful) {
+            Toasty.success(context, successMsg, Toast.LENGTH_SHORT, true).show();
+        } else {
+            Toasty.error(context, failMsg, Toast.LENGTH_SHORT, true).show();
+        }
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder {

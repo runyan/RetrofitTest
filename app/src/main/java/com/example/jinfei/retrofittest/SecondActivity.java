@@ -24,6 +24,7 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -185,11 +186,10 @@ public class SecondActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String nickName = et.getText().toString();
                 if (nickName.isEmpty()) {
-                    Toast.makeText(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT).show();
+                    Toasty.info(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT, false).show();
                 } else {
                     boolean saveResult = DBUtil.save(id, nickName, imagePath);
-                    String msg = saveResult ? favoriteSuccess : favoriteFail;
-                    Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+                    showMessage(mContext, saveResult, favoriteSuccess, favoriteFail);
                     favoriteLayout(saveResult);
                 }
                 dialog.dismiss();
@@ -201,8 +201,7 @@ public class SecondActivity extends BaseActivity {
     @OnClick(R.id.un_favorite)
     void unFavorite() {
         boolean deleteResult = DBUtil.delete(id);
-        String msg = deleteResult ? unFavoriteSuccess : unFavoriteFail;
-        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+        showMessage(mContext, deleteResult, unFavoriteSuccess, unFavoriteFail);
         favoriteLayout(!deleteResult);
     }
 

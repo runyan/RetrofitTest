@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
@@ -21,6 +22,7 @@ import com.example.jinfei.retrofittest.util.Util;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 import rx.Subscription;
 
 public class BaseActivity extends AppCompatActivity {
@@ -81,5 +83,17 @@ public class BaseActivity extends AppCompatActivity {
     protected void handleError(String tag, Throwable e, Context context, NetworkInterface networkInterface, NetworkError networkError) {
         Log.e(tag, e.toString());
         Util.showErrorDialog(context, e, networkInterface, networkError);
+    }
+
+    protected void showMessage(Context context, boolean successful, String successMsg, String failMsg) {
+        if(successful) {
+            Toasty.success(context, successMsg, Toast.LENGTH_SHORT, true).show();
+        } else {
+            Toasty.error(context, failMsg, Toast.LENGTH_SHORT, true).show();
+        }
+    }
+
+    protected void showNormalMessage(Context context, String msg) {
+        Toasty.info(context, msg, Toast.LENGTH_SHORT, false).show();
     }
 }
