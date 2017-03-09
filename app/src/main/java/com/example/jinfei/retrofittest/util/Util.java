@@ -104,7 +104,7 @@ public class Util {
         et.setBackground(null);
         Field f;
         try {
-            f =TextView.class.getDeclaredField("mCursorDrawableRes");
+            f = TextView.class.getDeclaredField("mCursorDrawableRes");
             f.setAccessible(true);
             f.set(et, R.drawable.editcursor);
         } catch (NoSuchFieldException | IllegalAccessException e) {
