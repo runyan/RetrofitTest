@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Cook;
@@ -28,7 +27,6 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import es.dmoral.toasty.Toasty;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
