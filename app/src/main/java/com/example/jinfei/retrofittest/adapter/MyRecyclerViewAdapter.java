@@ -2,7 +2,6 @@ package com.example.jinfei.retrofittest.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,48 +89,45 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                 holder.item_view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-                        final EditText et = new EditText(context);
-                        et.setText(nickName);
-                        et.setSelection(et.getText().toString().length());
-                        new AlertDialog.Builder(context).setTitle(context.getString(R.string.enter_nickname))
-                                .setView(et)
-                                .setCancelable(false)
-                                .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        String newName = et.getText().toString();
-                                        if (newName.isEmpty()) {
-                                            Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            boolean updateResult = DBUtil.update(dishId, newName);
-                                            String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
-                                            if (updateResult) {
-                                                ((Favourite) list.get(tempPosition)).setNickName(newName);
-                                                notifyDataSetChanged();
-                                            }
-                                            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                                        }
-                                        dialogInterface.dismiss();
+                        final EditText et = Util.getEditText(context, context.getResources().getString(R.string.my_favourite));
+                        android.app.AlertDialog dialog = Util.getBasicDialog(context, context.getString(R.string.enter_nickname));
+                        dialog.setView(et);
+                        dialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String newName = et.getText().toString();
+                                if (newName.isEmpty()) {
+                                    Toast.makeText(context, context.getString(R.string.nickname_not_empty), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    boolean updateResult = DBUtil.update(dishId, newName);
+                                    String msg = updateResult ? context.getString(R.string.update_success) : context.getString(R.string.update_fail);
+                                    if (updateResult) {
+                                        ((Favourite) list.get(tempPosition)).setNickName(newName);
+                                        notifyDataSetChanged();
                                     }
-                                })
-                                .setNeutralButton(context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        boolean deleteResult = DBUtil.delete(dishId);
-                                        String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
-                                        if (deleteResult) {
-                                            list.remove(tempPosition);
-                                            notifyItemRemoved(tempPosition);
-                                            notifyItemRangeChanged(tempPosition, getItemCount());
-                                            if (null != listener) {
-                                                listener.onDataChange();
-                                            }
-                                        }
-                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                                        dialogInterface.dismiss();
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                boolean deleteResult = DBUtil.delete(dishId);
+                                String msg = deleteResult ? context.getString(R.string.unfavorite_success) : context.getString(R.string.unfavorite_fail);
+                                if (deleteResult) {
+                                    list.remove(tempPosition);
+                                    notifyItemRemoved(tempPosition);
+                                    notifyItemRangeChanged(tempPosition, getItemCount());
+                                    if (null != listener) {
+                                        listener.onDataChange();
                                     }
-                                })
-                                .show();
+                                }
+                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.show();
                         return false;
                     }
                 });

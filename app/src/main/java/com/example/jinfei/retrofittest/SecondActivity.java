@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
@@ -178,28 +177,25 @@ public class SecondActivity extends BaseActivity {
 
     @OnClick(R.id.favorite)
     void favorite() {
-        final EditText et = new EditText(mContext);
-        et.setText(myFavorite);
-        et.setSelection(et.getText().toString().length());
-        new AlertDialog.Builder(mContext).setTitle(title)
-                .setView(et)
-                .setCancelable(false)
-                .setPositiveButton(confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String nickName = et.getText().toString();
-                        if (nickName.isEmpty()) {
-                            Toast.makeText(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT).show();
-                        } else {
-                            boolean saveResult = DBUtil.save(id, nickName, imagePath);
-                            String msg = saveResult ? favoriteSuccess : favoriteFail;
-                            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-                            favoriteLayout(saveResult);
-                        }
-                        dialog.dismiss();
-                    }
-                })
-                .show();
+        final EditText et = Util.getEditText(mContext, myFavorite);
+        android.app.AlertDialog dialog = Util.getBasicDialog(mContext, title);
+        dialog.setView(et);
+        dialog.setButton(DialogInterface.BUTTON_POSITIVE, confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String nickName = et.getText().toString();
+                if (nickName.isEmpty()) {
+                    Toast.makeText(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT).show();
+                } else {
+                    boolean saveResult = DBUtil.save(id, nickName, imagePath);
+                    String msg = saveResult ? favoriteSuccess : favoriteFail;
+                    Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+                    favoriteLayout(saveResult);
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @OnClick(R.id.un_favorite)

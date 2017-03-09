@@ -6,7 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.jinfei.retrofittest.R;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
@@ -17,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -47,8 +50,7 @@ public class Util {
 
     public static void showErrorDialog(Context context, Throwable e, final NetworkInterface network, final NetworkError networkError) {
         String msg = (e instanceof IOException) ? context.getResources().getString(R.string.network_error) : e.toString();
-        AlertDialog dialog = new AlertDialog.Builder(context).create();
-        dialog.setTitle(context.getResources().getString(R.string.error));
+        AlertDialog dialog = getBasicDialog(context, context.getResources().getString(R.string.error));
         dialog.setMessage(msg);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.reconnect), new DialogInterface.OnClickListener() {
             @Override
@@ -64,9 +66,15 @@ public class Util {
                 networkError.onError();
             }
         });
+        dialog.show();
+    }
+
+    public static AlertDialog getBasicDialog(Context context, String title) {
+        AlertDialog dialog = new android.app.AlertDialog.Builder(context).create();
+        dialog.setTitle(title);
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
-        dialog.show();
+        return dialog;
     }
 
     public static void redirect(Context context, Class<? extends Activity> targetClass, Map<String, Object> params) {
@@ -88,6 +96,22 @@ public class Util {
         mDialog.setCancelable(false);
         mDialog.setCanceledOnTouchOutside(false);
         return mDialog;
+    }
+
+    public static EditText getEditText(Context context, String text) {
+        EditText et = new EditText(context);
+        et.setText(text);
+        et.setBackground(null);
+        Field f;
+        try {
+            f =TextView.class.getDeclaredField("mCursorDrawableRes");
+            f.setAccessible(true);
+            f.set(et, R.drawable.editcursor);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        et.setSelection(et.getText().toString().length());
+        return et;
     }
 
 }
