@@ -26,15 +26,12 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
-public class SecondActivity extends BaseActivity implements Callback<Menu> {
+public class SecondActivity extends BaseActivity {
 
     @BindView(R.id.menu_pic)
     ImageView pic;
@@ -125,35 +122,9 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
     }
 
     @SuppressWarnings("all")
-    @Override
-    public void onResponse(Call<Menu> call, Response<Menu> response) {
-        if (!response.isSuccessful()) {
-            handleError(response.toString());
-        } else {
-            Menu menu = response.body();
-            imagePath = menu.getImg();
-            Util.setImage(mContext, imagePath, pic);
-            name.setText(menu.getName());
-            food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
-            keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
-            description.setText(Html.fromHtml("<b>" + descriptionStr + "</b>" + menu.getDescription()));
-            message.setText(Html.fromHtml("<b>" + messageStr + "</b>" + menu.getMessage()));
-            count.setText(Html.fromHtml("<b>" + countStr + "</b>" + String.valueOf(menu.getCount())));
-            fcount.setText(Html.fromHtml("<b>" + fcountStr + "</b>" + String.valueOf(menu.getFcount())));
-            rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
-        }
-    }
-
-    @Override
-    public void onFailure(Call<Menu> call, Throwable t) {
-        handleError(t.toString());
-    }
-
     private void networkCall() {
         chooseLayout(false, mainLayout);
         Service service = Util.getService(mContext);
-        Call<Menu> call = service.getMenu(id);
-        call.enqueue(this);
         subscription = service.getRxMenu(id)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -173,11 +144,21 @@ public class SecondActivity extends BaseActivity implements Callback<Menu> {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
+                        handleError(e.toString());
                     }
 
                     @Override
-                    public void onNext(Menu tngou) {
-
+                    public void onNext(Menu menu) {
+                        imagePath = menu.getImg();
+                        Util.setImage(mContext, imagePath, pic);
+                        name.setText(menu.getName());
+                        food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
+                        keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
+                        description.setText(Html.fromHtml("<b>" + descriptionStr + "</b>" + menu.getDescription()));
+                        message.setText(Html.fromHtml("<b>" + messageStr + "</b>" + menu.getMessage()));
+                        count.setText(Html.fromHtml("<b>" + countStr + "</b>" + String.valueOf(menu.getCount())));
+                        fcount.setText(Html.fromHtml("<b>" + fcountStr + "</b>" + String.valueOf(menu.getFcount())));
+                        rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
                     }
                 });
     }

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Cook;
-import com.example.jinfei.retrofittest.entity.Tngou;
+import com.example.jinfei.retrofittest.entity.TngouResponse;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.myInterface.Service;
@@ -25,16 +25,13 @@ import java.util.List;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
 
-public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
+public class ThirdActivity extends BaseActivity  {
 
     @BindView(R.id.dishes)
     RecyclerView rv;
@@ -68,30 +65,9 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
     }
 
     @Override
-    public void onResponse(Call<Tngou> call, Response<Tngou> response) {
-       if(!response.isSuccessful()) {
-          handleError(response.toString());
-       } else {
-           list = response.body().getList();
-           if(null == list || list.isEmpty()) {
-               Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
-               overridePendingTransition(0, 0);
-               finish();
-           }
-       }
-        rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
-    }
-
-    @Override
     protected void onRestart() {
         super.onRestart();
         rv.invalidate();
-    }
-
-    @Override
-    public void onFailure(Call<Tngou> call, Throwable t) {
-       handleError(t.toString());
     }
 
     private void handleError(String reason) {
@@ -116,8 +92,6 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
     private void networkCall(String name) {
         chooseLayout(false, rv);
         Service service = Util.getService(mContext);
-        Call<Tngou> call = service.getDishes(name);
-        call.enqueue(this);
         subscription = service.getRxDishes(name)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -128,7 +102,7 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())//显示Dialog在主线程中
                 .observeOn(AndroidSchedulers.mainThread())//显示数据在主线程
-                .subscribe(new Subscriber<Tngou>() {
+                .subscribe(new Subscriber<TngouResponse<List<Cook>>>() {
                     @Override
                     public void onCompleted() {
                         mDialog.cancel();
@@ -137,13 +111,20 @@ public class ThirdActivity extends BaseActivity implements Callback<Tngou> {
                     @Override
                     public void onError(Throwable e) {
                         mDialog.cancel();
+                        handleError(e.toString());
                     }
 
                     @Override
-                    public void onNext(Tngou tngou) {
-
+                    public void onNext(TngouResponse<List<Cook>> response) {
+                        list = response.tngou;
+                        if(null == list || list.isEmpty()) {
+                            Toast.makeText(mContext, notFound, Toast.LENGTH_SHORT).show();
+                            overridePendingTransition(0, 0);
+                            finish();
+                        }
+                        rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
+                        rv.setLayoutManager(new LinearLayoutManager(mContext));
                     }
                 });
     }
-
 }
