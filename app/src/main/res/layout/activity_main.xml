@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,16 +21,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:queryHint="@string/enter_query">
-
         </SearchView>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/json_lv"
+        <com.scu.miomin.shswiperefresh.core.SHSwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_below="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
-        </android.support.v7.widget.RecyclerView>
+            app:progress_bar_color="@color/colorPrimary"
+            app:refresh_text="@string/pull_refresh"
+            app:guidance_text_color="@color/colorPrimary"
+            app:guidance_view_bg_color="@android:color/transparent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/json_lv"
+                android:layout_below="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+            </android.support.v7.widget.RecyclerView>
+
+        </com.scu.miomin.shswiperefresh.core.SHSwipeRefreshLayout>
+
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/back"
