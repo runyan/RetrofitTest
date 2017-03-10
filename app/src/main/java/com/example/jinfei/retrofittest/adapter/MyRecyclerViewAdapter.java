@@ -50,7 +50,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         this.listener = listener;
     }
 
-    private void setLayout(RecyclerViewHolder holder, String title, String content, String imagePath, final int id) {
+    private void setLayout(RecyclerViewHolder holder, String title, final String content, String imagePath, final int id) {
         Util.setImage(context, imagePath, holder.iv);
         holder.tv_title.setText(title);
         holder.tv_content.setText(content);
@@ -62,7 +62,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                     params.put("menuId", id);
                     Util.redirect(context, SecondActivity.class, params);
                 } else {
-                    Toast.makeText(context, context.getResources().getString(R.string.loading), Toast.LENGTH_SHORT).show();
+                    showMessage(context, context.getResources().getString(R.string.loading));
                 }
             }
         });
@@ -155,6 +155,10 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         } else {
             Toasty.error(context, failMsg, Toast.LENGTH_SHORT, true).show();
         }
+    }
+
+    private void showMessage(Context context, String msg) {
+        Toasty.info(context, msg, Toast.LENGTH_SHORT, false).show();
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
