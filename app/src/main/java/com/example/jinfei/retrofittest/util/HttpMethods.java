@@ -57,8 +57,8 @@ public class HttpMethods {
         return instance;
     }
 
-    public void getList(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, String path, Map<String, Integer> options) {
-        service.getRxList(path, options)
+    public void getList(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, Map<String, Integer> options) {
+        service.getRxList(options)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {

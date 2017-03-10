@@ -17,8 +17,8 @@ import rx.Observable;
 public interface Service {
 
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("api/{category}/list")
-    Observable<TngouResponse<List<Cook>>> getRxList(@Path("category") String path, @QueryMap Map<String, Integer> options);
+    @GET("api/cook/list")
+    Observable<TngouResponse<List<Cook>>> getRxList(@QueryMap Map<String, Integer> options);
     @Headers("Cache-Control: public, max-age=3600")
     @GET("api/cook/show/")
     Observable<Menu> getRxMenu(@Query("id") int id);
