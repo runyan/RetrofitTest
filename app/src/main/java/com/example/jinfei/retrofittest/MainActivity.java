@@ -191,7 +191,7 @@ public class MainActivity extends BaseActivity {
                 rv.setLayoutManager(mLayoutManager);
             }
         };
-        new HttpMethods(mContext).getList(subscriber, mDialog, "cook", options);
+        HttpMethods.getInstance(mContext).getList(subscriber, mDialog, "cook", options);
     }
 
     private void move(boolean moveUp) {

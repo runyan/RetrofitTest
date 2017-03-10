@@ -2,6 +2,7 @@ package com.example.jinfei.retrofittest.util;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.Menu;
@@ -29,13 +30,15 @@ public class HttpMethods {
 
     private static final int DEFAULT_TIMEOUT = 5;
 
+    private static HttpMethods instance;
+
     private Service service;
 
-
-    public HttpMethods(Context context) {
+    private HttpMethods(Context context) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         File cacheFile = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
+        Log.e("test", context.getCacheDir().getAbsolutePath());
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
         OkHttpClient client = httpClientBuilder.cache(cache).build();
         Retrofit retrofit = new Retrofit.Builder()
@@ -45,6 +48,13 @@ public class HttpMethods {
                 .baseUrl(BASE_URL)
                 .build();
         service = retrofit.create(Service.class);
+    }
+
+    public static synchronized HttpMethods getInstance(Context context) {
+        if(null == instance) {
+            instance = new HttpMethods(context.getApplicationContext());
+        }
+        return instance;
     }
 
     public void getList(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, String path, Map<String, Integer> options) {

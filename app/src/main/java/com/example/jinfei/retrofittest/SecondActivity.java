@@ -156,7 +156,7 @@ public class SecondActivity extends BaseActivity {
                 rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
             }
         };
-        new HttpMethods(mContext).getMenu(subscriber, mDialog, id);
+       HttpMethods.getInstance(mContext).getMenu(subscriber, mDialog, id);
     }
 
     public void retry() {

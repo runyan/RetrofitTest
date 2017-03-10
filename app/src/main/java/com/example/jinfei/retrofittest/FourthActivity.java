@@ -26,8 +26,6 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
-import rx.Observable;
-import rx.functions.Action1;
 
 public class FourthActivity extends AppCompatActivity {
 
@@ -55,9 +53,14 @@ public class FourthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fourth);
         ButterKnife.bind(this);
         mContext = FourthActivity.this;
-        populateList();
+        favouriteList = DBUtil.getFavouriteList();
         checkList(favouriteList);
-        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite);
+        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
+            @Override
+            public void onDataChange() {
+                checkList(favouriteList);
+            }
+        });
         rv.setAdapter(adapter);
         rv.setLayoutManager(new LinearLayoutManager(mContext));
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
@@ -112,18 +115,8 @@ public class FourthActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         rv.invalidate();
-        populateList();
+        favouriteList = DBUtil.getFavouriteList();
         checkList(favouriteList);
-    }
-
-    private void populateList() {
-        Observable.just(DBUtil.getFavouriteList())
-                .subscribe(new Action1<List<Favourite>>() {
-                    @Override
-                    public void call(List<Favourite> list) {
-                        favouriteList = list;
-                    }
-                });
     }
 
 }
