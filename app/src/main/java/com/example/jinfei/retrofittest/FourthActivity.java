@@ -67,31 +67,25 @@ public class FourthActivity extends AppCompatActivity {
         searchFavorite.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Observable.just(DBUtil.searchFavorite(query))
-                        .subscribe(new Action1<List<Favourite>>() {
-                            @Override
-                            public void call(List<Favourite> list) {
-                                final List<Favourite> searchResult = list;
-                                if (searchResult.isEmpty()) {
-                                    Toasty.info(mContext, notFound, Toast.LENGTH_SHORT,false).show();
-                                } else {
-                                    searchFavorite.clearFocus();
-                                    adapter = new MyRecyclerViewAdapter(mContext, searchResult, Type.favorite, new UIListener() {
-                                        @Override
-                                        public void onDataChange() {
-                                            rv.invalidate();
-                                            if (searchResult.isEmpty()) {
-                                                Util.redirect(mContext, FourthActivity.class, null);
-                                                overridePendingTransition(0, 0);
-                                                finish();
-                                            }
-                                        }
-                                    });
-                                    rv.setAdapter(adapter);
-                                    rv.setLayoutManager(new LinearLayoutManager(mContext));
-                                }
+                final List<Favourite> searchResult = DBUtil.searchFavorite(query);
+                if (searchResult.isEmpty()) {
+                    Toasty.info(mContext, notFound, Toast.LENGTH_SHORT, false).show();
+                } else {
+                    searchFavorite.clearFocus();
+                    adapter = new MyRecyclerViewAdapter(mContext, searchResult, Type.favorite, new UIListener() {
+                        @Override
+                        public void onDataChange() {
+                            rv.invalidate();
+                            if (searchResult.isEmpty()) {
+                                Util.redirect(mContext, FourthActivity.class, null);
+                                overridePendingTransition(0, 0);
+                                finish();
                             }
-                        });
+                        }
+                    });
+                    rv.setAdapter(adapter);
+                    rv.setLayoutManager(new LinearLayoutManager(mContext));
+                }
                 return true;
             }
 

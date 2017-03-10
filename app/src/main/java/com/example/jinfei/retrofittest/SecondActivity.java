@@ -16,8 +16,8 @@ import android.widget.Toast;
 import com.example.jinfei.retrofittest.entity.Menu;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
-import com.example.jinfei.retrofittest.myInterface.Service;
 import com.example.jinfei.retrofittest.util.DBUtil;
+import com.example.jinfei.retrofittest.util.HttpMethods;
 import com.example.jinfei.retrofittest.util.Util;
 
 import butterknife.BindString;
@@ -26,9 +26,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 
 public class SecondActivity extends BaseActivity {
 
@@ -123,53 +120,43 @@ public class SecondActivity extends BaseActivity {
     @SuppressWarnings("all")
     private void networkCall() {
         chooseLayout(false, mainLayout);
-        Service service = Util.getService(mContext);
-        subscription = service.getRxMenu(id)
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
+        Subscriber<Menu> subscriber = new Subscriber<Menu>() {
+            @Override
+            public void onCompleted() {
+                mDialog.cancel();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mDialog.cancel();
+                handleError(TAG, e, mContext, new NetworkInterface() {
                     @Override
                     public void call() {
-                        mDialog.show();
+                        networkCall();
                     }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())//显示Dialog在主线程中
-                .observeOn(AndroidSchedulers.mainThread())//显示数据在主线程
-                .subscribe(new Subscriber<Menu>() {
+                }, new NetworkError() {
                     @Override
-                    public void onCompleted() {
-                        mDialog.cancel();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mDialog.cancel();
-                        handleError(TAG, e, mContext, new NetworkInterface() {
-                            @Override
-                            public void call() {
-                                networkCall();
-                            }
-                        }, new NetworkError() {
-                            @Override
-                            public void onError() {
-                                chooseLayout(true, mainLayout);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onNext(Menu menu) {
-                        imagePath = menu.getImg();
-                        Util.setImage(mContext, imagePath, pic);
-                        name.setText(menu.getName());
-                        food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
-                        keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
-                        description.setText(Html.fromHtml("<b>" + descriptionStr + "</b>" + menu.getDescription()));
-                        message.setText(Html.fromHtml("<b>" + messageStr + "</b>" + menu.getMessage()));
-                        count.setText(Html.fromHtml("<b>" + countStr + "</b>" + String.valueOf(menu.getCount())));
-                        fcount.setText(Html.fromHtml("<b>" + fcountStr + "</b>" + String.valueOf(menu.getFcount())));
-                        rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
+                    public void onError() {
+                        chooseLayout(true, mainLayout);
                     }
                 });
+            }
+
+            @Override
+            public void onNext(Menu menu) {
+                imagePath = menu.getImg();
+                Util.setImage(mContext, imagePath, pic);
+                name.setText(menu.getName());
+                food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
+                keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
+                description.setText(Html.fromHtml("<b>" + descriptionStr + "</b>" + menu.getDescription()));
+                message.setText(Html.fromHtml("<b>" + messageStr + "</b>" + menu.getMessage()));
+                count.setText(Html.fromHtml("<b>" + countStr + "</b>" + String.valueOf(menu.getCount())));
+                fcount.setText(Html.fromHtml("<b>" + fcountStr + "</b>" + String.valueOf(menu.getFcount())));
+                rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
+            }
+        };
+        new HttpMethods(mContext).getMenu(subscriber, mDialog, id);
     }
 
     public void retry() {

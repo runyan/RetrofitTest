@@ -13,36 +13,16 @@ import android.widget.TextView;
 import com.example.jinfei.retrofittest.R;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
-import com.example.jinfei.retrofittest.myInterface.Service;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 
 public class Util {
 
-    private static final String BASE_URL = "http://www.tngou.net/";
     private static final String IMG_URL = "http://tnfs.tngou.net/img";
-
-    public static Service getService(Context context) {
-        File cacheFile = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
-        Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
-        OkHttpClient client = new OkHttpClient.Builder().cache(cache).connectTimeout(30, TimeUnit.SECONDS).build();
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL).client(client)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create()).build();
-       return retrofit.create(Service.class);
-    }
 
     public static void setImage(Context context, String imgSrc, ImageView imageView) {
         Picasso.with(context).load(IMG_URL + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).error(R.mipmap.ic_launcher).into(imageView);

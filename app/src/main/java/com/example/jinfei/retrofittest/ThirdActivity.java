@@ -13,8 +13,8 @@ import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.TngouResponse;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
-import com.example.jinfei.retrofittest.myInterface.Service;
 import com.example.jinfei.retrofittest.myenum.Type;
+import com.example.jinfei.retrofittest.util.HttpMethods;
 import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
@@ -24,10 +24,6 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
-
 
 public class ThirdActivity extends BaseActivity  {
 
@@ -74,50 +70,40 @@ public class ThirdActivity extends BaseActivity  {
 
     private void networkCall(final String name) {
         chooseLayout(false, rv);
-        Service service = Util.getService(mContext);
-        subscription = service.getRxDishes(name)
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
+        Subscriber<TngouResponse<List<Cook>>> subscriber = new Subscriber<TngouResponse<List<Cook>>>() {
+            @Override
+            public void onCompleted() {
+                mDialog.cancel();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mDialog.cancel();
+                handleError(TAG, e, mContext, new NetworkInterface() {
                     @Override
                     public void call() {
-                        mDialog.show();
+                        networkCall(name);
                     }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())//显示Dialog在主线程中
-                .observeOn(AndroidSchedulers.mainThread())//显示数据在主线程
-                .subscribe(new Subscriber<TngouResponse<List<Cook>>>() {
+                }, new NetworkError() {
                     @Override
-                    public void onCompleted() {
-                        mDialog.cancel();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mDialog.cancel();
-                        handleError(TAG, e, mContext, new NetworkInterface() {
-                            @Override
-                            public void call() {
-                                networkCall(name);
-                            }
-                        }, new NetworkError() {
-                            @Override
-                            public void onError() {
-                                chooseLayout(true, rv);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onNext(TngouResponse<List<Cook>> response) {
-                        list = response.tngou;
-                        if(null == list || list.isEmpty()) {
-                            showNormalMessage(notFound);
-                            overridePendingTransition(0, 0);
-                            finish();
-                        }
-                        rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
-                        rv.setLayoutManager(new LinearLayoutManager(mContext));
+                    public void onError() {
+                        chooseLayout(true, rv);
                     }
                 });
+            }
+
+            @Override
+            public void onNext(TngouResponse<List<Cook>> response) {
+                list = response.tngou;
+                if(null == list || list.isEmpty()) {
+                    showNormalMessage(notFound);
+                    overridePendingTransition(0, 0);
+                    finish();
+                }
+                rv.setAdapter(new MyRecyclerViewAdapter(mContext, list, Type.cook));
+                rv.setLayoutManager(new LinearLayoutManager(mContext));
+            }
+        };
+        new HttpMethods(mContext).getDishes(subscriber, mDialog, name);
     }
 }

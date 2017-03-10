@@ -13,8 +13,8 @@ import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.TngouResponse;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
-import com.example.jinfei.retrofittest.myInterface.Service;
 import com.example.jinfei.retrofittest.myenum.Type;
+import com.example.jinfei.retrofittest.util.HttpMethods;
 import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 import com.scu.miomin.shswiperefresh.core.SHSwipeRefreshLayout;
@@ -28,9 +28,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
 
@@ -164,47 +161,37 @@ public class MainActivity extends BaseActivity {
         options.put("page", pageNum);
         options.put("rows", 20);
         chooseLayout(false, normalLayout);
-        Service service = Util.getService(mContext);
-        subscription = service.getRxList("cook", options)
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
+        Subscriber<TngouResponse<List<Cook>>> subscriber = new Subscriber<TngouResponse<List<Cook>>>() {
+            @Override
+            public void onCompleted() {
+                mDialog.cancel();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mDialog.cancel();
+                handleError(TAG, e, mContext, new NetworkInterface() {
                     @Override
                     public void call() {
-                        mDialog.show();
+                        networkCall();
                     }
-                })
-                .subscribeOn(AndroidSchedulers.mainThread())//显示Dialog在主线程中
-                .observeOn(AndroidSchedulers.mainThread())//显示数据在主线程
-                .subscribe(new Subscriber<TngouResponse<List<Cook>>>() {
+                }, new NetworkError() {
                     @Override
-                    public void onCompleted() {
-                        mDialog.cancel();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mDialog.cancel();
-                        handleError(TAG, e, mContext, new NetworkInterface() {
-                            @Override
-                            public void call() {
-                                networkCall();
-                            }
-                        }, new NetworkError() {
-                            @Override
-                            public void onError() {
-                                chooseLayout(true, normalLayout);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onNext(TngouResponse<List<Cook>> response) {
-                        list = response.tngou;
-                        adapter = new MyRecyclerViewAdapter(mContext, list, Type.cook);
-                        rv.setAdapter(adapter);
-                        rv.setLayoutManager(mLayoutManager);
+                    public void onError() {
+                        chooseLayout(true, normalLayout);
                     }
                 });
+            }
+
+            @Override
+            public void onNext(TngouResponse<List<Cook>> response) {
+                list = response.tngou;
+                adapter = new MyRecyclerViewAdapter(mContext, list, Type.cook);
+                rv.setAdapter(adapter);
+                rv.setLayoutManager(mLayoutManager);
+            }
+        };
+        new HttpMethods(mContext).getList(subscriber, mDialog, "cook", options);
     }
 
     private void move(boolean moveUp) {
