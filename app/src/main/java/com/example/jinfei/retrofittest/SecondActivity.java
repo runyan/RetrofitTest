@@ -12,7 +12,6 @@ import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -167,7 +166,7 @@ public class SecondActivity extends BaseActivity {
                 rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
             }
         };
-       HttpMethods.getInstance(mContext).getMenu(subscriber, mDialog, id);
+       subscription = HttpMethods.getInstance(mContext).getMenu(subscriber, mDialog, id);
     }
 
     public void retry() {

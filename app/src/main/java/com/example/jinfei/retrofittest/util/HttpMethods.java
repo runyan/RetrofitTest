@@ -20,6 +20,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
@@ -57,8 +58,8 @@ public class HttpMethods {
         return instance;
     }
 
-    public void getList(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, Map<String, Integer> options) {
-        service.getRxList(options)
+    public Subscription getList(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, Map<String, Integer> options) {
+        return service.getRxList(options)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -71,8 +72,8 @@ public class HttpMethods {
                 .subscribe(subscriber);
     }
 
-    public void getMenu(Subscriber<Menu> subscriber, final ProgressDialog mDialog, int id) {
-        service.getRxMenu(id).subscribeOn(Schedulers.io())
+    public Subscription getMenu(Subscriber<Menu> subscriber, final ProgressDialog mDialog, int id) {
+        return service.getRxMenu(id).subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -84,8 +85,8 @@ public class HttpMethods {
                 .subscribe(subscriber);
     }
 
-    public void getDishes(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, String name) {
-        service.getRxDishes(name).subscribeOn(Schedulers.io())
+    public Subscription getDishes(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, String name) {
+        return service.getRxDishes(name).subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
                     @Override

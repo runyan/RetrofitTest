@@ -114,6 +114,6 @@ public class ThirdActivity extends BaseActivity  {
                 rv.setLayoutManager(new LinearLayoutManager(mContext));
             }
         };
-        HttpMethods.getInstance(mContext).getDishes(subscriber, mDialog, name);
+        subscription = HttpMethods.getInstance(mContext).getDishes(subscriber, mDialog, name);
     }
 }

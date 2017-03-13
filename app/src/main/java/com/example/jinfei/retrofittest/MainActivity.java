@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity {
                 rv.setLayoutManager(mLayoutManager);
             }
         };
-        HttpMethods.getInstance(mContext).getList(subscriber, mDialog, options);
+        subscription = HttpMethods.getInstance(mContext).getList(subscriber, mDialog, options);
     }
 
     private void move(boolean moveUp) {
