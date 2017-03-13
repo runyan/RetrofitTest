@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -50,7 +51,7 @@ public class SecondActivity extends BaseActivity {
     @BindView(R.id.menu_rcount)
     TextView rcount;
     @BindView(R.id.main_layout)
-    RelativeLayout mainLayout;
+    CoordinatorLayout mainLayout;
     @BindView(R.id.favorite)
     FloatingActionButton favourite;
     @BindView(R.id.un_favorite)
