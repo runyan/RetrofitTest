@@ -2,7 +2,6 @@ package com.example.jinfei.retrofittest.util;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
 
 import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.Menu;
@@ -39,7 +38,6 @@ public class HttpMethods {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         File cacheFile = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
-        Log.e("test", context.getCacheDir().getAbsolutePath());
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
         OkHttpClient client = httpClientBuilder.cache(cache).build();
         Retrofit retrofit = new Retrofit.Builder()
