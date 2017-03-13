@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
@@ -53,6 +55,8 @@ public class SecondActivity extends BaseActivity {
     FloatingActionButton favourite;
     @BindView(R.id.un_favorite)
     FloatingActionButton unFavourite;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindString(R.string.my_favourite)
     String myFavorite;
@@ -99,6 +103,12 @@ public class SecondActivity extends BaseActivity {
         ButterKnife.bind(this);
         mContext = SecondActivity.this;
         mDialog = Util.getLoadingDialog(mContext);
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(null != actionBar) {
+            actionBar.setTitle(getResources().getString(R.string.app_name));
+        }
 
         Intent intent = getIntent();
         id = intent.getIntExtra("menuId", 0);

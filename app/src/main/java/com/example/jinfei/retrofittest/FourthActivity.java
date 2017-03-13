@@ -2,9 +2,11 @@ package com.example.jinfei.retrofittest;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -37,6 +39,8 @@ public class FourthActivity extends AppCompatActivity {
     RelativeLayout mainLayout;
     @BindView(R.id.search_favorite)
     SearchView searchFavorite;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindString((R.string.not_found))
     String notFound;
@@ -53,6 +57,11 @@ public class FourthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fourth);
         ButterKnife.bind(this);
         mContext = FourthActivity.this;
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(null != actionBar) {
+            actionBar.setTitle(getResources().getString(R.string.app_name));
+        }
         favouriteList = DBUtil.getFavouriteList();
         checkList(favouriteList);
         adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {

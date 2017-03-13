@@ -2,10 +2,14 @@ package com.example.jinfei.retrofittest;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.RelativeLayout;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.SearchView;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
@@ -17,7 +21,6 @@ import com.example.jinfei.retrofittest.myenum.Type;
 import com.example.jinfei.retrofittest.util.HttpMethods;
 import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
-import com.scu.miomin.shswiperefresh.core.SHSwipeRefreshLayout;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,27 +38,26 @@ public class MainActivity extends BaseActivity {
     RecyclerView rv;
 
     @BindView(R.id.normal_layout)
-    RelativeLayout normalLayout;
+    CoordinatorLayout normalLayout;
 
     @BindView(R.id.search_view)
     SearchView search;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @BindView(R.id.back)
     FloatingActionButton back;
 
-    @BindView(R.id.swipe_refresh)
-    SHSwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.swipe_container)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @BindString(R.string.first_page)
     String firstPageStr;
+    @BindString(R.string.next_page)
+    String nextPageStr;
     @BindString(R.string.finifsh_refresh)
     String finishRefreshing;
-    @BindString(R.string.pull_refresh)
-    String pullToRefresh;
-    @BindString(R.string.release_to_refresh)
-    String releaseToRefresh;
-    @BindString(R.string.refreshing)
-    String refreshing;
 
     private List<Cook> list;
 
@@ -63,6 +65,7 @@ public class MainActivity extends BaseActivity {
     private LinearLayoutManager mLayoutManager;
 
     private int pageNum = 1;
+    private int getLastVisiblePosition = 0,lastVisiblePositionY=0;
 
     private static final String TAG = "MainActivity";
 
@@ -74,6 +77,13 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mContext = MainActivity.this;
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(null != actionBar) {
+            actionBar.setTitle(getResources().getString(R.string.app_name));
+        }
+
         mDialog = Util.getLoadingDialog(mContext);
         mLayoutManager = new LinearLayoutManager(mContext);
 
@@ -99,47 +109,50 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        swipeRefreshLayout.setOnRefreshListener(new SHSwipeRefreshLayout.SHSOnRefreshListener() {
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 networkCall();
                 showNormalMessage(finishRefreshing);
-                swipeRefreshLayout.finishRefresh();
-            }
-
-            @Override
-            public void onLoading() {
-                move(true);
-                swipeRefreshLayout.finishLoadmore();
-            }
-
-            @Override
-            public void onRefreshPulStateChange(float percent, int state) {
-                stateChange(percent, state);
-            }
-
-            @Override
-            public void onLoadmorePullStateChange(float percent, int state) {
-
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
-    }
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
 
-    void stateChange(float percent, int state) {
-        if(percent > 0.2f) {
-            switch (state) {
-                case SHSwipeRefreshLayout.NOT_OVER_TRIGGER_POINT:
-                    swipeRefreshLayout.setLoaderViewText(pullToRefresh);
-                    break;
-                case SHSwipeRefreshLayout.OVER_TRIGGER_POINT:
-                    swipeRefreshLayout.setLoaderViewText(releaseToRefresh);
-                    break;
-                case SHSwipeRefreshLayout.START:
-                    swipeRefreshLayout.setLoaderViewText(refreshing);
-                    break;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (lastVisibleItem + 2 >= mLayoutManager.getItemCount()) {
+                        View v = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
+                        int[] location = new int[2];
+                        v.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标
+                        int y = location[1];
+                        if (lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
+                            showNormalMessage(nextPageStr);
+                            getLastVisiblePosition = lastVisibleItem;
+                            lastVisiblePositionY = y;
+                            return;
+                        } else if (lastVisibleItem == getLastVisiblePosition
+                                && lastVisiblePositionY == y) { //第二次拖至底部
+                            move(true);
+                        }
+                    }
+                    getLastVisiblePosition = 0;
+                    lastVisiblePositionY = 0;
+                }
             }
-        }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+            }
+        });
+
     }
 
     @OnClick(R.id.back)

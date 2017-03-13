@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
@@ -29,6 +31,8 @@ public class ThirdActivity extends BaseActivity  {
 
     @BindView(R.id.dishes)
     RecyclerView rv;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindString(R.string.not_found)
     String notFound;
@@ -50,6 +54,12 @@ public class ThirdActivity extends BaseActivity  {
 
         mContext = ThirdActivity.this;
         mDialog = Util.getLoadingDialog(mContext);
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if(null != actionBar) {
+            actionBar.setTitle(getResources().getString(R.string.app_name));
+        }
 
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 6, Color.BLUE));
 
