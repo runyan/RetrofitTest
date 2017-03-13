@@ -34,7 +34,7 @@ public class Util {
         if(e instanceof IOException) {
              msg = context.getResources().getString(R.string.network_error);
         } else if(e instanceof ServerException) {
-            msg = "服务器错误";
+            msg = context.getResources().getString(R.string.server_error);
         } else {
             msg = e.toString();
         }
