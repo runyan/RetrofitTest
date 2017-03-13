@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.jinfei.retrofittest.R;
+import com.example.jinfei.retrofittest.exception.ServerException;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.squareup.picasso.Picasso;
@@ -29,7 +30,14 @@ public class Util {
     }
 
     public static void showErrorDialog(Context context, Throwable e, final NetworkInterface network, final NetworkError networkError) {
-        String msg = (e instanceof IOException) ? context.getResources().getString(R.string.network_error) : e.toString();
+        String msg;
+        if(e instanceof IOException) {
+             msg = context.getResources().getString(R.string.network_error);
+        } else if(e instanceof ServerException) {
+            msg = "服务器错误";
+        } else {
+            msg = e.toString();
+        }
         AlertDialog dialog = getBasicDialog(context, context.getResources().getString(R.string.error));
         dialog.setMessage(msg);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getResources().getString(R.string.reconnect), new DialogInterface.OnClickListener() {

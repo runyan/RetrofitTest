@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jinfei.retrofittest.entity.Menu;
+import com.example.jinfei.retrofittest.exception.ServerException;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.util.DBUtil;
@@ -156,6 +157,19 @@ public class SecondActivity extends BaseActivity {
 
             @Override
             public void onNext(Menu menu) {
+                if(!menu.isStatus()) {
+                    handleError(TAG, new ServerException(), mContext, new NetworkInterface() {
+                        @Override
+                        public void call() {
+                            networkCall();
+                        }
+                    }, new NetworkError() {
+                        @Override
+                        public void onError() {
+                            chooseLayout(true, mainLayout);
+                        }
+                    });
+                }
                 imagePath = menu.getImg();
                 Util.setImage(mContext, imagePath, pic);
                 name.setText(menu.getName());

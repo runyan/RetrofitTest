@@ -15,6 +15,7 @@ import android.widget.SearchView;
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.TngouResponse;
+import com.example.jinfei.retrofittest.exception.ServerException;
 import com.example.jinfei.retrofittest.myInterface.NetworkError;
 import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.myenum.Type;
@@ -200,6 +201,20 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onNext(TngouResponse<List<Cook>> response) {
+                if(!response.status) {
+                    handleError(TAG, new ServerException(), mContext, new NetworkInterface() {
+                        @Override
+                        public void call() {
+                            networkCall();
+                        }
+                    }, new NetworkError() {
+                        @Override
+                        public void onError() {
+                            chooseLayout(true, normalLayout);
+                        }
+                    });
+                    return;
+                }
                 list = response.tngou;
                 adapter = new MyRecyclerViewAdapter(mContext, list, Type.cook);
                 rv.setAdapter(adapter);
