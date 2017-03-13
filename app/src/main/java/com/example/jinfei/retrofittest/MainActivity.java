@@ -58,6 +58,8 @@ public class MainActivity extends BaseActivity {
     String nextPageStr;
     @BindString(R.string.finifsh_refresh)
     String finishRefreshing;
+    @BindString(R.string.app_name)
+    String appName;
 
     private List<Cook> list;
 
@@ -81,7 +83,7 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(getResources().getString(R.string.app_name));
+            actionBar.setTitle(appName);
         }
 
         mDialog = Util.getLoadingDialog(mContext);

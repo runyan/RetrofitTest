@@ -36,6 +36,8 @@ public class ThirdActivity extends BaseActivity  {
 
     @BindString(R.string.not_found)
     String notFound;
+    @BindString(R.string.app_name)
+    String appName;
 
     private String name;
 
@@ -58,7 +60,7 @@ public class ThirdActivity extends BaseActivity  {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(getResources().getString(R.string.app_name));
+            actionBar.setTitle(appName);
         }
 
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 6, Color.BLUE));

@@ -44,6 +44,8 @@ public class FourthActivity extends AppCompatActivity {
 
     @BindString((R.string.not_found))
     String notFound;
+    @BindString(R.string.app_name)
+    String appName;
 
     private List<Favourite> favouriteList;
 
@@ -60,7 +62,7 @@ public class FourthActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(getResources().getString(R.string.app_name));
+            actionBar.setTitle(appName);
         }
         favouriteList = DBUtil.getFavouriteList();
         checkList(favouriteList);

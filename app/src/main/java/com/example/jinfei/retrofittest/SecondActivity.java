@@ -58,6 +58,8 @@ public class SecondActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindString(R.string.app_name)
+    String appName;
     @BindString(R.string.my_favourite)
     String myFavorite;
     @BindString(R.string.enter_nickname)
@@ -107,7 +109,7 @@ public class SecondActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(getResources().getString(R.string.app_name));
+            actionBar.setTitle(appName);
         }
 
         Intent intent = getIntent();
