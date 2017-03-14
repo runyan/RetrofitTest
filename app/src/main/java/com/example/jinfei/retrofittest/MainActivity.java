@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,6 +62,8 @@ public class MainActivity extends BaseActivity {
     String finishRefreshing;
     @BindString(R.string.app_name)
     String appName;
+    @BindString(R.string.click_me_to_go_to_next_page)
+    String clickMe;
 
     private List<Cook> list;
 
@@ -134,7 +137,17 @@ public class MainActivity extends BaseActivity {
                         v.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标
                         int y = location[1];
                         if (lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
-                            showNormalMessage(nextPageStr);
+                            Snackbar snackbar = Snackbar.make(normalLayout, nextPageStr, Snackbar.LENGTH_LONG)
+                                    .setAction(clickMe, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            move(true);
+                                        }
+                            });
+                            if(snackbar.isShown()) {
+                                snackbar.dismiss();
+                            }
+                            snackbar.show();
                             getLastVisiblePosition = lastVisibleItem;
                             lastVisiblePositionY = y;
                             return;
