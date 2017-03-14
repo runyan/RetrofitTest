@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity {
     String firstPageStr;
     @BindString(R.string.next_page)
     String nextPageStr;
-    @BindString(R.string.finifsh_refresh)
+    @BindString(R.string.finish_refresh)
     String finishRefreshing;
     @BindString(R.string.click_me_to_go_to_next_page)
     String clickMe;
