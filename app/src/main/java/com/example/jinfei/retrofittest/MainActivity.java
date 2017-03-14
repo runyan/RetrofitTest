@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.SearchView;
 
@@ -186,7 +185,6 @@ public class MainActivity extends BaseActivity {
     }
 
     private void networkCall() {
-        Log.e(TAG, pageNum+"");
         chooseLayout(false, normalLayout);
         Subscriber<TngouResponse<List<Cook>>> subscriber = new Subscriber<TngouResponse<List<Cook>>>() {
             @Override
