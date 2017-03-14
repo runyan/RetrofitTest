@@ -50,7 +50,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         this.listener = listener;
     }
 
-    private void setLayout(RecyclerViewHolder holder, String title, final String content, String imagePath, final int id) {
+    private void setLayout(RecyclerViewHolder holder, String title, String content, String imagePath, final int id) {
         Util.setImage(context, imagePath, holder.iv);
         holder.tv_title.setText(title);
         holder.tv_content.setText(content);

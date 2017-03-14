@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.SearchView;
 
@@ -128,6 +129,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                Snackbar snackbar = Snackbar.make(normalLayout, nextPageStr, Snackbar.LENGTH_LONG);
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (lastVisibleItem + 2 >= mLayoutManager.getItemCount()) {
                         View v = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
@@ -135,8 +137,7 @@ public class MainActivity extends BaseActivity {
                         v.getLocationOnScreen(location); //获取在整个屏幕内的绝对坐标
                         int y = location[1];
                         if (lastVisibleItem != getLastVisiblePosition && lastVisiblePositionY != y) { //第一次拖至底部
-                            Snackbar snackbar = Snackbar.make(normalLayout, nextPageStr, Snackbar.LENGTH_LONG)
-                                    .setAction(clickMe, new View.OnClickListener() {
+                            snackbar.setAction(clickMe, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             move(true);
@@ -151,6 +152,9 @@ public class MainActivity extends BaseActivity {
                             return;
                         } else if (lastVisibleItem == getLastVisiblePosition
                                 && lastVisiblePositionY == y) { //第二次拖至底部
+                            if(snackbar.isShown()) {
+                                snackbar.dismiss();
+                            }
                             move(true);
                         }
                     }
@@ -182,10 +186,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void networkCall() {
-        Map<String, Integer> options = new HashMap<>();
-        options.put("id", 0);
-        options.put("page", pageNum);
-        options.put("rows", 20);
+        Log.e(TAG, pageNum+"");
         chooseLayout(false, normalLayout);
         Subscriber<TngouResponse<List<Cook>>> subscriber = new Subscriber<TngouResponse<List<Cook>>>() {
             @Override
@@ -231,7 +232,7 @@ public class MainActivity extends BaseActivity {
                 rv.setLayoutManager(mLayoutManager);
             }
         };
-        subscription = HttpMethods.getInstance(mContext).getList(subscriber, mDialog, options);
+        subscription = HttpMethods.getInstance(mContext).getList(subscriber, mDialog, 0, pageNum, 20);
     }
 
     private void move(boolean moveUp) {

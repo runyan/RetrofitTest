@@ -2,6 +2,8 @@ package com.example.jinfei.retrofittest.util;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.example.jinfei.retrofittest.entity.Cook;
 import com.example.jinfei.retrofittest.entity.Menu;
@@ -9,12 +11,16 @@ import com.example.jinfei.retrofittest.entity.TngouResponse;
 import com.example.jinfei.retrofittest.myInterface.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
+import okhttp3.CacheControl;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -34,12 +40,41 @@ public class HttpMethods {
 
     private Service service;
 
-    private HttpMethods(Context context) {
+    private HttpMethods(final Context context) {
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         File cacheFile = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
         Cache cache = new Cache(cacheFile, 1024 * 1024 * 100);
-        OkHttpClient client = httpClientBuilder.cache(cache).build();
+        Interceptor interceptor = new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request request = chain.request();
+                if(!isNetworkConnected(context)) {
+                    request = request.newBuilder()
+                            .cacheControl(CacheControl.FORCE_CACHE)
+                            .build();
+                }
+                Response response = chain.proceed(request);
+                if(isNetworkConnected(context)) {
+                    int maxAge = 60 * 60; // 有网络时 设置缓存超时时间1个小时
+                    response.newBuilder()
+                            .header("Cache-Control", "public, max-age=" + maxAge)
+                            .removeHeader("Pragma")// 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
+                            .build();
+                } else {
+                    int maxStale = 60 * 60 * 24 * 7 * 4;  // 无网络时，设置超时为4周
+                    response.newBuilder()
+                            .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
+                            .removeHeader("Pragma")
+                            .build();
+
+                }
+                return response;
+            }
+        };
+        OkHttpClient client = httpClientBuilder.cache(cache)
+                .addInterceptor(interceptor)
+                .build();
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -56,8 +91,8 @@ public class HttpMethods {
         return instance;
     }
 
-    public Subscription getList(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, Map<String, Integer> options) {
-        return service.getRxList(options)
+    public Subscription getList(Subscriber<TngouResponse<List<Cook>>> subscriber, final ProgressDialog mDialog, int id, int pages, int rows) {
+        return service.getRxList(id, pages, rows)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -94,6 +129,18 @@ public class HttpMethods {
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
+    }
+
+    private boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
     }
 
 }
