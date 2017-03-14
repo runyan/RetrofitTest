@@ -57,13 +57,9 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         holder.item_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != list) {
-                    Map<String, Object> params = new HashMap<>();
-                    params.put("menuId", id);
-                    Util.redirect(context, SecondActivity.class, params);
-                } else {
-                    showMessage(context, context.getResources().getString(R.string.loading));
-                }
+                Map<String, Object> params = new HashMap<>();
+                params.put("menuId", id);
+                Util.redirect(context, SecondActivity.class, params);
             }
         });
     }
@@ -155,10 +151,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
         } else {
             Toasty.error(context, failMsg, Toast.LENGTH_SHORT, true).show();
         }
-    }
-
-    private void showMessage(Context context, String msg) {
-        Toasty.info(context, msg, Toast.LENGTH_SHORT, false).show();
     }
 
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
