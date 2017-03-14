@@ -2,6 +2,7 @@ package com.example.jinfei.retrofittest;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,11 @@ import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import es.dmoral.toasty.Toasty;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class FourthActivity extends AppCompatActivity {
 
@@ -50,12 +56,18 @@ public class FourthActivity extends AppCompatActivity {
     String appName;
     @BindString(R.string.favorite_size)
     String favoriteSizeStr;
+    @BindString(R.string.load_data_success)
+    String loadSuccess;
+    @BindString(R.string.load_data_fail)
+    String loadFail;
 
     private List<Favourite> favouriteList;
 
     private MyRecyclerViewAdapter adapter;
 
     private Context mContext;
+
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,17 +80,32 @@ public class FourthActivity extends AppCompatActivity {
         if(null != actionBar) {
             actionBar.setTitle(appName);
         }
-        favouriteList = DBUtil.getFavouriteList();
-        tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
-        checkList(favouriteList);
-        adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
+        subscription = populateList(new Subscriber<List<Favourite>>() {
             @Override
-            public void onDataChange() {
+            public void onCompleted() {
+                Toasty.success(mContext, loadSuccess).show();
                 tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
                 checkList(favouriteList);
+                adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
+                    @Override
+                    public void onDataChange() {
+                        tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
+                        checkList(favouriteList);
+                    }
+                });
+                rv.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loadDataFail();
+            }
+
+            @Override
+            public void onNext(List<Favourite> list) {
+                favouriteList = list;
             }
         });
-        rv.setAdapter(adapter);
         rv.setLayoutManager(new LinearLayoutManager(mContext));
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
 
@@ -126,6 +153,16 @@ public class FourthActivity extends AppCompatActivity {
         finish();
     }
 
+    private void loadDataFail() {
+        Toasty.error(mContext, loadFail).show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               finish();
+            }
+        }, 1000);
+    }
+
     private void checkList(List<Favourite> list) {
         boolean isEmpty = list.isEmpty();
         int tvVisibility = isEmpty ? View.VISIBLE : View.INVISIBLE;
@@ -134,12 +171,40 @@ public class FourthActivity extends AppCompatActivity {
         mainLayout.setVisibility(mainLayoutVisibility);
     }
 
+    private Subscription populateList(Subscriber<List<Favourite>> subscriber) {
+        return Observable.just(DBUtil.getFavouriteList())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
         rv.invalidate();
-        favouriteList = DBUtil.getFavouriteList();
-        checkList(favouriteList);
+        populateList(new Subscriber<List<Favourite>>() {
+            @Override
+            public void onCompleted() {
+                checkList(favouriteList);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                loadDataFail();
+            }
+
+            @Override
+            public void onNext(List<Favourite> list) {
+                favouriteList = list;
+            }
+        });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+    }
 }

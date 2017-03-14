@@ -35,4 +35,6 @@
     <string name="server_error">服务器错误</string>
     <string name="click_me_to_go_to_next_page">点我翻页</string>
     <string name="favorite_size">共有%1d条收藏</string>
+    <string name="load_data_success">读取数据成功</string>
+    <string name="load_data_fail">读取数据失败</string>
 </resources>
