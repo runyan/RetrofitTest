@@ -75,8 +75,8 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         if (subscription != null && !subscription.isUnsubscribed()) {//isUnsubscribed 是否取消订阅
             subscription.unsubscribe();//取消网络请求
         }

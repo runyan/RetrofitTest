@@ -69,7 +69,7 @@ public class MainActivity extends BaseActivity {
     private LinearLayoutManager mLayoutManager;
 
     private int pageNum = 1;
-    private int getLastVisiblePosition = 0,lastVisiblePositionY=0;
+    private int getLastVisiblePosition = 0, lastVisiblePositionY = 0;
 
     private static final String TAG = "MainActivity";
 
@@ -89,8 +89,8 @@ public class MainActivity extends BaseActivity {
 
         mDialog = Util.getLoadingDialog(mContext);
         mLayoutManager = new LinearLayoutManager(mContext);
-
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
+
         networkCall();
 
         search.setIconifiedByDefault(false);
@@ -111,11 +111,12 @@ public class MainActivity extends BaseActivity {
                 return false;
             }
         });
-
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                list.clear();
                 networkCall();
                 showNormalMessage(finishRefreshing);
                 swipeRefreshLayout.setRefreshing(false);
@@ -172,7 +173,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @OnClick(R.id.back)
-    void onBackClick() {
+    void onBackClicked() {
         if (pageNum > 1) {
             move(false);
         } else {
