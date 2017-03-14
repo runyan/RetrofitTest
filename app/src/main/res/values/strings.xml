@@ -33,4 +33,5 @@
     <string name="finifsh_refresh">刷新完成</string>
     <string name="next_page">再次上拉即可翻页</string>
     <string name="server_error">服务器错误</string>
+    <string name="click_me_to_go_to_next_page">点我翻页</string>
 </resources>
