@@ -60,8 +60,6 @@ public class MainActivity extends BaseActivity {
     String nextPageStr;
     @BindString(R.string.finifsh_refresh)
     String finishRefreshing;
-    @BindString(R.string.app_name)
-    String appName;
     @BindString(R.string.click_me_to_go_to_next_page)
     String clickMe;
 

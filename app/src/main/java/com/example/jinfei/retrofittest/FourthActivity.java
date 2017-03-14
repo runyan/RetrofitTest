@@ -44,7 +44,7 @@ public class FourthActivity extends AppCompatActivity {
 
     @BindString((R.string.not_found))
     String notFound;
-    @BindString(R.string.app_name)
+    @BindString(R.string.my_favourite)
     String appName;
 
     private List<Favourite> favouriteList;

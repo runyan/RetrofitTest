@@ -40,8 +40,6 @@ public class ThirdActivity extends BaseActivity  {
 
     @BindString(R.string.not_found)
     String notFound;
-    @BindString(R.string.app_name)
-    String appName;
 
     private String name;
 
