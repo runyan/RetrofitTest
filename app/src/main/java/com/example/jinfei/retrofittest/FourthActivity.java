@@ -35,6 +35,8 @@ public class FourthActivity extends AppCompatActivity {
     RecyclerView rv;
     @BindView(R.id.no_favorite)
     TextView tv;
+    @BindView(R.id.favorite_list_size)
+    TextView tv_favorite_list_size;
     @BindView(R.id.main_layout)
     RelativeLayout mainLayout;
     @BindView(R.id.search_favorite)
@@ -46,6 +48,8 @@ public class FourthActivity extends AppCompatActivity {
     String notFound;
     @BindString(R.string.my_favourite)
     String appName;
+    @BindString(R.string.favorite_size)
+    String favoriteSizeStr;
 
     private List<Favourite> favouriteList;
 
@@ -65,10 +69,12 @@ public class FourthActivity extends AppCompatActivity {
             actionBar.setTitle(appName);
         }
         favouriteList = DBUtil.getFavouriteList();
+        tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
         checkList(favouriteList);
         adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
             @Override
             public void onDataChange() {
+                tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
                 checkList(favouriteList);
             }
         });
@@ -82,6 +88,7 @@ public class FourthActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 final List<Favourite> searchResult = DBUtil.searchFavorite(query);
+                tv_favorite_list_size.setText(String.format(favoriteSizeStr, searchResult.size()));
                 if (searchResult.isEmpty()) {
                     Toasty.info(mContext, notFound, Toast.LENGTH_SHORT, false).show();
                 } else {
@@ -90,10 +97,9 @@ public class FourthActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange() {
                             rv.invalidate();
+                            tv_favorite_list_size.setText(String.format(favoriteSizeStr, searchResult.size()));
                             if (searchResult.isEmpty()) {
-                                Util.redirect(mContext, FourthActivity.class, null);
-                                overridePendingTransition(0, 0);
-                                finish();
+                                onEmptyText();
                             }
                         }
                     });
@@ -107,14 +113,20 @@ public class FourthActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
                     searchFavorite.clearFocus();
-                    rv.invalidate();
+                    onEmptyText();
                 }
                 return true;
             }
         });
     }
 
-    public void checkList(List<Favourite> list) {
+    private void onEmptyText() {
+        Util.redirect(mContext, FourthActivity.class, null);
+        overridePendingTransition(0, 0);
+        finish();
+    }
+
+    private void checkList(List<Favourite> list) {
         boolean isEmpty = list.isEmpty();
         int tvVisibility = isEmpty ? View.VISIBLE : View.INVISIBLE;
         int mainLayoutVisibility = isEmpty ? View.INVISIBLE : View.VISIBLE;

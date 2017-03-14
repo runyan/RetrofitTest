@@ -29,9 +29,18 @@
 
             </SearchView>
 
+            <TextView
+                android:id="@+id/favorite_list_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/search_favorite"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"/>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/favorite_list"
-                android:layout_below="@+id/search_favorite"
+                android:layout_below="@+id/favorite_list_size"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
