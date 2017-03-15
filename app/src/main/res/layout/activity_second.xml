@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
+                <com.example.jinfei.retrofittest.widget.RecyclerImageView
                     android:id="@+id/menu_pic"
                     android:layout_width="match_parent"
                     android:layout_height="100dp"

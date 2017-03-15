@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +21,7 @@ import com.example.jinfei.retrofittest.myInterface.NetworkInterface;
 import com.example.jinfei.retrofittest.util.DBUtil;
 import com.example.jinfei.retrofittest.util.HttpMethods;
 import com.example.jinfei.retrofittest.util.Util;
+import com.example.jinfei.retrofittest.widget.RecyclerImageView;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -33,7 +33,7 @@ import rx.Subscriber;
 public class SecondActivity extends BaseActivity {
 
     @BindView(R.id.menu_pic)
-    ImageView pic;
+    RecyclerImageView pic;
     @BindView(R.id.menu_name)
     TextView name;
     @BindView(R.id.menu_food)

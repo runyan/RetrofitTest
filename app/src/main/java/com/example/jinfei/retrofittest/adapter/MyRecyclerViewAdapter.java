@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ import com.example.jinfei.retrofittest.myInterface.UIListener;
 import com.example.jinfei.retrofittest.myenum.Type;
 import com.example.jinfei.retrofittest.util.DBUtil;
 import com.example.jinfei.retrofittest.util.Util;
+import com.example.jinfei.retrofittest.widget.RecyclerImageView;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -156,7 +156,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_iv)
-        ImageView iv;
+        RecyclerImageView iv;
         @BindView(R.id.item_title)
         TextView tv_title;
         @BindView(R.id.item_info)

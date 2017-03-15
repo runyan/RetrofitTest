@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.util.TypedValue;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,7 +28,18 @@ public class Util {
     private static final String IMG_URL = "http://tnfs.tngou.net/img";
 
     public static void setImage(Context context, String imgSrc, ImageView imageView) {
-        Picasso.with(context).load(IMG_URL + imgSrc).placeholder(context.getDrawable(R.drawable.loading)).error(R.mipmap.ic_launcher).into(imageView);
+        Picasso.with(context).load(IMG_URL + imgSrc)
+                .resize(dp2px(context, 80f), dp2px(context, 80f))
+                .onlyScaleDown()
+                .config(Bitmap.Config.RGB_565)
+                .placeholder(context.getDrawable(R.drawable.loading))
+                .error(R.mipmap.ic_launcher)
+                .into(imageView);
+    }
+
+    private static int dp2px(Context context, float dpVal) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                dpVal, context.getResources().getDisplayMetrics());
     }
 
     public static void showErrorDialog(Context context, Throwable e, final NetworkInterface network, final NetworkError networkError) {
