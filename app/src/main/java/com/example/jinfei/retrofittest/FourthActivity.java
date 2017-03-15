@@ -83,17 +83,21 @@ public class FourthActivity extends AppCompatActivity {
         subscription = populateList(new Subscriber<List<Favourite>>() {
             @Override
             public void onCompleted() {
-                Toasty.success(mContext, loadSuccess).show();
+                checkListForLayout(favouriteList);
+                if(!favouriteList.isEmpty()) {
+                    Toasty.success(mContext, loadSuccess).show();
+                }
                 tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
-                checkList(favouriteList);
                 adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
                     @Override
                     public void onDataChange() {
                         tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
-                        checkList(favouriteList);
+                        checkListForLayout(favouriteList);
                     }
                 });
                 rv.setAdapter(adapter);
+                rv.setLayoutManager(new LinearLayoutManager(mContext));
+                rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
             }
 
             @Override
@@ -106,8 +110,6 @@ public class FourthActivity extends AppCompatActivity {
                 favouriteList = list;
             }
         });
-        rv.setLayoutManager(new LinearLayoutManager(mContext));
-        rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
 
         searchFavorite.setIconifiedByDefault(false);
         searchFavorite.setFocusable(false);
@@ -163,7 +165,7 @@ public class FourthActivity extends AppCompatActivity {
         }, 1000);
     }
 
-    private void checkList(List<Favourite> list) {
+    private void checkListForLayout(List<Favourite> list) {
         boolean isEmpty = list.isEmpty();
         int tvVisibility = isEmpty ? View.VISIBLE : View.INVISIBLE;
         int mainLayoutVisibility = isEmpty ? View.INVISIBLE : View.VISIBLE;
@@ -181,11 +183,21 @@ public class FourthActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        rv.invalidate();
-        populateList(new Subscriber<List<Favourite>>() {
+        checkListForLayout(favouriteList);
+        subscription = populateList(new Subscriber<List<Favourite>>() {
             @Override
             public void onCompleted() {
-                checkList(favouriteList);
+                tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
+                adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
+                    @Override
+                    public void onDataChange() {
+                        checkListForLayout(favouriteList);
+                        tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
+                    }
+                });
+                rv.setAdapter(adapter);
+                rv.setAdapter(adapter);
+                rv.setLayoutManager(new LinearLayoutManager(mContext));
             }
 
             @Override

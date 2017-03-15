@@ -51,7 +51,7 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
     }
 
     private void setLayout(RecyclerViewHolder holder, String title, String content, String imagePath, final int id) {
-        Util.setImage(context, imagePath, holder.iv);
+        Util.setImage(context, 80f, 80f, imagePath, holder.iv);
         holder.tv_title.setText(title);
         holder.tv_content.setText(content);
         holder.item_view.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +104,14 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAd
                                     showMessage(context, updateResult, context.getString(R.string.update_success), context.getString(R.string.update_fail));
                                 }
                                 dialog.dismiss();
+                            }
+                        });
+                        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(null != dialog) {
+                                    dialog.dismiss();
+                                }
                             }
                         });
                         dialog.setButton(DialogInterface.BUTTON_NEUTRAL, context.getString(R.string.un_favorite), new DialogInterface.OnClickListener() {

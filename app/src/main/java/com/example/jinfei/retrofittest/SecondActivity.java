@@ -1,5 +1,7 @@
 package com.example.jinfei.retrofittest;
 
+import android.app.AlertDialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,6 +67,10 @@ public class SecondActivity extends BaseActivity {
     String title;
     @BindString(R.string.confirm)
     String confirm;
+    @BindString(R.string.cancel)
+    String cancel;
+    @BindString(R.string.go_to_my_favorite)
+    String goToMyFavorite;
     @BindString(R.string.nickname_not_empty)
     String nickNameNotEmpty;
     @BindString(R.string.favorite_success)
@@ -169,7 +175,7 @@ public class SecondActivity extends BaseActivity {
                     });
                 }
                 imagePath = menu.getImg();
-                Util.setImage(mContext, imagePath, pic);
+                Util.setImage(mContext, 250f, 200f, imagePath, pic);
                 name.setText(menu.getName());
                 food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
                 keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
@@ -190,7 +196,7 @@ public class SecondActivity extends BaseActivity {
     @OnClick(R.id.favorite)
     void favorite() {
         final EditText et = Util.getEditText(mContext, myFavorite);
-        android.app.AlertDialog dialog = Util.getBasicDialog(mContext, title);
+        AlertDialog dialog = Util.getBasicDialog(mContext, title);
         dialog.setView(et);
         dialog.setButton(DialogInterface.BUTTON_POSITIVE, confirm, new DialogInterface.OnClickListener() {
             @Override
@@ -204,6 +210,21 @@ public class SecondActivity extends BaseActivity {
                     favoriteLayout(saveResult);
                 }
                 dialog.dismiss();
+            }
+        });
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(null != dialog) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.setButton(DialogInterface.BUTTON_NEUTRAL, goToMyFavorite, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Util.redirect(mContext, FourthActivity.class, null);
             }
         });
         dialog.show();

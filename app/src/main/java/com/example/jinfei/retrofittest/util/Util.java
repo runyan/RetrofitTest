@@ -27,9 +27,9 @@ public class Util {
 
     private static final String IMG_URL = "http://tnfs.tngou.net/img";
 
-    public static void setImage(Context context, String imgSrc, ImageView imageView) {
+    public static void setImage(Context context, float width, float height, String imgSrc, ImageView imageView) {
         Picasso.with(context).load(IMG_URL + imgSrc)
-                .resize(dp2px(context, 80f), dp2px(context, 80f))
+                .resize(dp2px(context, width), dp2px(context, height))
                 .onlyScaleDown()
                 .config(Bitmap.Config.RGB_565)
                 .placeholder(context.getDrawable(R.drawable.loading))
@@ -71,7 +71,7 @@ public class Util {
     }
 
     public static AlertDialog getBasicDialog(Context context, String title) {
-        AlertDialog dialog = new android.app.AlertDialog.Builder(context).create();
+        AlertDialog dialog = new AlertDialog.Builder(context).create();
         dialog.setTitle(title);
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
