@@ -152,10 +152,10 @@ public class MainActivity extends BaseActivity {
                             return;
                         } else if (lastVisibleItem == getLastVisiblePosition
                                 && lastVisiblePositionY == y) { //第二次拖至底部
+                            move(true);
                             if(snackbar.isShown()) {
                                 snackbar.dismiss();
                             }
-                            move(true);
                         }
                     }
                     getLastVisiblePosition = 0;
