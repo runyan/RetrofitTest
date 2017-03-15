@@ -34,7 +34,7 @@ public class HttpMethods {
 
     private static final String BASE_URL = "http://www.tngou.net/";
 
-    private static final int DEFAULT_TIMEOUT = 5;
+    private static final int DEFAULT_TIMEOUT = 30;
 
     private static HttpMethods instance;
 

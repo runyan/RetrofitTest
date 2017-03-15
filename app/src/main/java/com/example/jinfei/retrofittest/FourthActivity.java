@@ -80,36 +80,7 @@ public class FourthActivity extends AppCompatActivity {
         if(null != actionBar) {
             actionBar.setTitle(appName);
         }
-        subscription = populateList(new Subscriber<List<Favourite>>() {
-            @Override
-            public void onCompleted() {
-                checkListForLayout(favouriteList);
-                if(!favouriteList.isEmpty()) {
-                    Toasty.success(mContext, loadSuccess).show();
-                }
-                tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
-                adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
-                    @Override
-                    public void onDataChange() {
-                        tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
-                        checkListForLayout(favouriteList);
-                    }
-                });
-                rv.setAdapter(adapter);
-                rv.setLayoutManager(new LinearLayoutManager(mContext));
-                rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                loadDataFail();
-            }
-
-            @Override
-            public void onNext(List<Favourite> list) {
-                favouriteList = list;
-            }
-        });
+        subscription = populateList(getSubscriber(true));
 
         searchFavorite.setIconifiedByDefault(false);
         searchFavorite.setFocusable(false);
@@ -180,13 +151,14 @@ public class FourthActivity extends AppCompatActivity {
                 .subscribe(subscriber);
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        checkListForLayout(favouriteList);
-        subscription = populateList(new Subscriber<List<Favourite>>() {
+    private Subscriber<List<Favourite>> getSubscriber(final boolean needMessage) {
+        return new Subscriber<List<Favourite>>() {
             @Override
             public void onCompleted() {
+                checkListForLayout(favouriteList);
+                if(needMessage && !favouriteList.isEmpty()) {
+                    Toasty.success(mContext, loadSuccess).show();
+                }
                 tv_favorite_list_size.setText(String.format(favoriteSizeStr, favouriteList.size()));
                 adapter = new MyRecyclerViewAdapter(mContext, favouriteList, Type.favorite, new UIListener() {
                     @Override
@@ -196,8 +168,8 @@ public class FourthActivity extends AppCompatActivity {
                     }
                 });
                 rv.setAdapter(adapter);
-                rv.setAdapter(adapter);
                 rv.setLayoutManager(new LinearLayoutManager(mContext));
+                rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
             }
 
             @Override
@@ -209,7 +181,13 @@ public class FourthActivity extends AppCompatActivity {
             public void onNext(List<Favourite> list) {
                 favouriteList = list;
             }
-        });
+        };
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        subscription = populateList(getSubscriber(false));
     }
 
     @Override

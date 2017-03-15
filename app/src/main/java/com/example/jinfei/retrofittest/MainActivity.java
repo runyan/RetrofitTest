@@ -90,7 +90,6 @@ public class MainActivity extends BaseActivity {
         mDialog = Util.getLoadingDialog(mContext);
         mLayoutManager = new LinearLayoutManager(mContext);
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
-
         networkCall();
 
         search.setIconifiedByDefault(false);
