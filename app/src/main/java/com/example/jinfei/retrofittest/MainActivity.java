@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.ArrayMap;
 import android.view.View;
 import android.widget.SearchView;
 
@@ -24,7 +25,6 @@ import com.example.jinfei.retrofittest.util.HttpMethods;
 import com.example.jinfei.retrofittest.util.Util;
 import com.example.jinfei.retrofittest.widget.RecyclerViewDivider;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity {
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Map<String, Object> params = new HashMap<>();
+                Map<String, Object> params = new ArrayMap<>();
                 params.put("name", query);
                 Util.redirect(mContext, ThirdActivity.class, params);
                 overridePendingTransition(0, 0);
