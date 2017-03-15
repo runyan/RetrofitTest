@@ -38,4 +38,6 @@
     <string name="load_data_success">数据读取成功</string>
     <string name="load_data_fail">数据读取失败</string>
     <string name="go_to_my_favorite">查看我的收藏</string>
+    <string name="menu_detail">菜谱详情</string>
+    <string name="search_result">搜索结果</string>
 </resources>

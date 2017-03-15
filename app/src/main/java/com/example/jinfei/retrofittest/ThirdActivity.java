@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Cook;
@@ -37,9 +38,13 @@ public class ThirdActivity extends BaseActivity  {
     Toolbar toolbar;
     @BindView(R.id.normal_layout)
     CoordinatorLayout normalLayout;
+    @BindView(R.id.title_text)
+    TextView titleText;
 
     @BindString(R.string.not_found)
     String notFound;
+    @BindString(R.string.search_result)
+    String searchResult;
 
     private String name;
 
@@ -62,7 +67,8 @@ public class ThirdActivity extends BaseActivity  {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(appName);
+            actionBar.setTitle(null);
+            titleText.setText(searchResult);
         }
 
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, 6, Color.BLUE));

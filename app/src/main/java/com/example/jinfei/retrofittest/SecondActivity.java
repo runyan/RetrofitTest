@@ -60,7 +60,11 @@ public class SecondActivity extends BaseActivity {
     FloatingActionButton unFavourite;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.title_text)
+    TextView titleText;
 
+    @BindString(R.string.menu_detail)
+    String menuDetail;
     @BindString(R.string.my_favourite)
     String myFavorite;
     @BindString(R.string.enter_nickname)
@@ -114,7 +118,8 @@ public class SecondActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(appName);
+            actionBar.setTitle(null);
+            titleText.setText(menuDetail);
         }
 
         Intent intent = getIntent();

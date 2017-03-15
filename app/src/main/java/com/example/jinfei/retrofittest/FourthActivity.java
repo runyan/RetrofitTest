@@ -43,6 +43,8 @@ public class FourthActivity extends AppCompatActivity {
     TextView tv;
     @BindView(R.id.favorite_list_size)
     TextView tv_favorite_list_size;
+    @BindView(R.id.title_text)
+    TextView titleText;
     @BindView(R.id.main_layout)
     RelativeLayout mainLayout;
     @BindView(R.id.search_favorite)
@@ -53,7 +55,7 @@ public class FourthActivity extends AppCompatActivity {
     @BindString((R.string.not_found))
     String notFound;
     @BindString(R.string.my_favourite)
-    String appName;
+    String myFavourite;
     @BindString(R.string.favorite_size)
     String favoriteSizeStr;
     @BindString(R.string.load_data_success)
@@ -78,7 +80,8 @@ public class FourthActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(appName);
+            actionBar.setTitle(null);
+            titleText.setText(myFavourite);
         }
         subscription = populateList(getSubscriber(true));
 

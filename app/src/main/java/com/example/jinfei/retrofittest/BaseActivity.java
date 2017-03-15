@@ -32,8 +32,6 @@ public class BaseActivity extends AppCompatActivity {
     @BindView(R.id.network_error_layout)
     RelativeLayout networkErrorLayout;
 
-    protected String appName = "菜谱应用";
-
     ProgressDialog mDialog;
 
     protected Subscription subscription;

@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.ArrayMap;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.jinfei.retrofittest.adapter.MyRecyclerViewAdapter;
 import com.example.jinfei.retrofittest.entity.Cook;
@@ -38,21 +39,18 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.json_lv)
     RecyclerView rv;
-
     @BindView(R.id.normal_layout)
     CoordinatorLayout normalLayout;
-
     @BindView(R.id.search_view)
     SearchView search;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-
     @BindView(R.id.back)
     FloatingActionButton back;
-
     @BindView(R.id.swipe_container)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.title_text)
+    TextView titleText;
 
     @BindString(R.string.first_page)
     String firstPageStr;
@@ -62,6 +60,8 @@ public class MainActivity extends BaseActivity {
     String finishRefreshing;
     @BindString(R.string.click_me_to_go_to_next_page)
     String clickMe;
+    @BindString(R.string.app_name)
+    String appName;
 
     private List<Cook> list;
 
@@ -84,7 +84,8 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
-            actionBar.setTitle(appName);
+            actionBar.setTitle(null);
+            titleText.setText(appName);
         }
 
         mDialog = Util.getLoadingDialog(mContext);

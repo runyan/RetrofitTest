@@ -3,10 +3,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--<include layout="@layout/toolbar" />-->
+
     <com.example.jinfei.retrofittest.widget.RecyclerImageView
         android:id="@+id/network_error"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:src="@drawable/error"
         android:contentDescription="@string/network_error"/>
@@ -16,9 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="30dp"
-            android:layout_below="@+id/network_error"
+            android:layout_alignParentBottom="true"
             android:text="@string/reconnect"/>
-
 
 </RelativeLayout>

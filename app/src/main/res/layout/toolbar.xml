@@ -10,9 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:background="?attr/colorPrimary"
+        app:theme="@style/AppTheme.ActionBar"
         app:layout_scrollFlags="scroll|enterAlways">
 
-    </android.support.v7.widget.Toolbar>
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
+    </android.support.v7.widget.Toolbar>
 
 </android.support.design.widget.AppBarLayout>
