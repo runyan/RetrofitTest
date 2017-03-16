@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">菜谱应用</string>
+    <string name="app_name">菜谱</string>
     <string name="title">标题</string>
     <string name="content">内容</string>
     <string name="food">主要食材：</string>

@@ -11,11 +11,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -250,29 +248,23 @@ public class SecondActivity extends BaseActivity {
 
     @OnClick(R.id.toolbar_pic)
     void showLargePic() {
-        RecyclerImageView picture = new RecyclerImageView(mContext);
+        RecyclerImageView picture = null;
+        final AlertDialog dialog = new AlertDialog.Builder(mContext).create();
+        dialog.show();
+        Window window = dialog.getWindow();
+        if(null != window) {
+            window.setContentView(R.layout.large_pic_dialog);
+            picture = (RecyclerImageView) window.findViewById(R.id.large_pic);
+        }
         Util.setLargeImage(mContext, imagePath, picture);
-        final PopupWindow popupWindow = new PopupWindow(mainLayout, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        popupWindow.setContentView(picture);
-        popupWindow.setTouchInterceptor(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (popupWindow.isShowing()) {
-                    popupWindow.dismiss();
-                    return true;
-                }
-                return false;
-            }
-        });
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(popupWindow.isShowing()) {
-                    popupWindow.dismiss();
+                if(dialog.isShowing()) {
+                    dialog.dismiss();
                 }
             }
         }, 10 * 1000);
-        popupWindow.showAsDropDown(mainLayout);
     }
 
     private void favoriteLayout(boolean favorite) {
