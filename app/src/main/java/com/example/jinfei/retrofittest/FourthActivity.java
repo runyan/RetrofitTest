@@ -86,7 +86,6 @@ public class FourthActivity extends AppCompatActivity {
         subscription = populateList(getSubscriber(true));
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
 
-        searchFavorite.setIconifiedByDefault(false);
         searchFavorite.setFocusable(false);
         searchFavorite.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

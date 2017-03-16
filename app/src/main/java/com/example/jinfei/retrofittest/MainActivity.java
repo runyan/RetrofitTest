@@ -93,7 +93,6 @@ public class MainActivity extends BaseActivity {
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
         networkCall();
 
-        search.setIconifiedByDefault(false);
         search.setFocusable(false);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
