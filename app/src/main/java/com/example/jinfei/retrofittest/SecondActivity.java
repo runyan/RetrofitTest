@@ -5,13 +5,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +66,8 @@ public class SecondActivity extends BaseActivity {
     @BindView(R.id.title_text)
     TextView titleText;
 
+    @BindString(R.string.click_to_view_large_image)
+    String largeImageHint;
     @BindString(R.string.menu_detail)
     String menuDetail;
     @BindString(R.string.my_favourite)
@@ -126,6 +132,7 @@ public class SecondActivity extends BaseActivity {
         networkCall();
 
         check();
+        showNormalMessage(largeImageHint);
     }
 
     private void check() {
@@ -239,6 +246,33 @@ public class SecondActivity extends BaseActivity {
         boolean deleteResult = DBUtil.delete(id);
         showMessage(deleteResult, unFavoriteSuccess, unFavoriteFail);
         favoriteLayout(!deleteResult);
+    }
+
+    @OnClick(R.id.toolbar_pic)
+    void showLargePic() {
+        RecyclerImageView picture = new RecyclerImageView(mContext);
+        Util.setLargeImage(mContext, imagePath, picture);
+        final PopupWindow popupWindow = new PopupWindow(mainLayout, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        popupWindow.setContentView(picture);
+        popupWindow.setTouchInterceptor(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                }
+            }
+        }, 10 * 1000);
+        popupWindow.showAsDropDown(mainLayout);
     }
 
     private void favoriteLayout(boolean favorite) {

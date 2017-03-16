@@ -94,6 +94,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void showNormalMessage(String msg) {
-        Toasty.info(getApplicationContext(), msg, Toast.LENGTH_SHORT, false).show();
+        Toasty.info(getApplicationContext(), msg, Toast.LENGTH_LONG, false).show();
     }
 }

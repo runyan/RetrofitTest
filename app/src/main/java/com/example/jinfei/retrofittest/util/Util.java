@@ -31,7 +31,15 @@ public class Util {
         Picasso.with(context).load(IMG_URL + imgSrc)
                 .resize(dp2px(context, width), dp2px(context, height))
                 .onlyScaleDown()
+                .centerCrop()
                 .config(Bitmap.Config.RGB_565)
+                .placeholder(context.getDrawable(R.drawable.loading))
+                .error(R.mipmap.ic_launcher)
+                .into(imageView);
+    }
+
+    public static void setLargeImage(Context context, String imgSrc, ImageView imageView) {
+        Picasso.with(context).load(IMG_URL + imgSrc)
                 .placeholder(context.getDrawable(R.drawable.loading))
                 .error(R.mipmap.ic_launcher)
                 .into(imageView);
