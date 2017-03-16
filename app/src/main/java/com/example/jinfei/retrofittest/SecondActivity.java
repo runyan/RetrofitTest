@@ -31,7 +31,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import es.dmoral.toasty.Toasty;
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class SecondActivity extends BaseActivity {
 
@@ -109,6 +113,8 @@ public class SecondActivity extends BaseActivity {
     private String imagePath;
 
     private Context mContext;
+
+    private Subscription favoriteSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,9 +220,23 @@ public class SecondActivity extends BaseActivity {
                 if (nickName.isEmpty()) {
                     Toasty.info(mContext, nickNameNotEmpty, Toast.LENGTH_SHORT, false).show();
                 } else {
-                    boolean saveResult = DBUtil.save(id, nickName, imagePath);
-                    showMessage(saveResult, favoriteSuccess, favoriteFail);
-                    favoriteLayout(saveResult);
+                    favoriteSubscription = doFavorite(DBUtil.save(id, nickName, imagePath), new Subscriber<Boolean>() {
+                        @Override
+                        public void onCompleted() {
+                            showMessage(true, favoriteSuccess, null);
+                            favoriteLayout(true);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            showMessage(false, null, favoriteFail);
+                            favoriteLayout(false);
+                        }
+
+                        @Override
+                        public void onNext(Boolean result) {
+                        }
+                    });
                 }
                 dialog.dismiss();
             }
@@ -241,9 +261,39 @@ public class SecondActivity extends BaseActivity {
 
     @OnClick(R.id.un_favorite)
     void unFavorite() {
-        boolean deleteResult = DBUtil.delete(id);
-        showMessage(deleteResult, unFavoriteSuccess, unFavoriteFail);
-        favoriteLayout(!deleteResult);
+        favoriteSubscription = doFavorite(DBUtil.delete(id), new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+                showMessage(true, unFavoriteSuccess, null);
+                favoriteLayout(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showMessage(false, null, unFavoriteFail);
+                favoriteLayout(true);
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+
+            }
+        });
+    }
+
+    private Subscription doFavorite(boolean just, Subscriber<Boolean> subscriber) {
+        return Observable.just(just)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(null != favoriteSubscription && !favoriteSubscription.isUnsubscribed()) {
+            favoriteSubscription.unsubscribe();
+        }
     }
 
     @OnClick(R.id.toolbar_pic)
