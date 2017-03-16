@@ -84,6 +84,7 @@ public class FourthActivity extends AppCompatActivity {
             titleText.setText(myFavourite);
         }
         subscription = populateList(getSubscriber(true));
+        rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
 
         searchFavorite.setIconifiedByDefault(false);
         searchFavorite.setFocusable(false);
@@ -172,7 +173,6 @@ public class FourthActivity extends AppCompatActivity {
                 });
                 rv.setAdapter(adapter);
                 rv.setLayoutManager(new LinearLayoutManager(mContext));
-                rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayout.HORIZONTAL, R.drawable.divider));
             }
 
             @Override
