@@ -30,17 +30,20 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
-public class HttpMethods {
+public class HttpMethods implements Cloneable {
 
     private static final String BASE_URL = "http://www.tngou.net/";
 
     private static final int DEFAULT_TIMEOUT = 30;
 
-    private static HttpMethods instance;
+    private static volatile HttpMethods instance;
 
     private Service service;
 
     private HttpMethods(final Context context) {
+        if(null != instance) {
+            throw new RuntimeException("Cannot construct a singleton more than once");
+        }
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder();
         httpClientBuilder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         File cacheFile = new File(context.getCacheDir().getAbsolutePath(), "HttpCache");
@@ -84,9 +87,11 @@ public class HttpMethods {
         service = retrofit.create(Service.class);
     }
 
-    public static synchronized HttpMethods getInstance(Context context) {
+    public static HttpMethods getInstance(Context context) {
         if(null == instance) {
-            instance = new HttpMethods(context.getApplicationContext());
+            synchronized (HttpMethods.class) {
+                instance = new HttpMethods(context.getApplicationContext());
+            }
         }
         return instance;
     }
@@ -143,4 +148,9 @@ public class HttpMethods {
         return false;
     }
 
+    @SuppressWarnings("all")
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException();
+    }
 }
