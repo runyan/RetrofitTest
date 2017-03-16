@@ -18,31 +18,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/toolbar" />
+        <include layout="@layout/toolbar_with_pic" />
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/c"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.example.jinfei.retrofittest.widget.RecyclerImageView
-                    android:id="@+id/menu_pic"
-                    android:layout_width="250dp"
-                    android:layout_height="200dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"
-                    android:contentDescription="@string/app_name" />
-
                 <TextView
                     android:id="@+id/menu_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/menu_pic"
+
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:clickable="false"

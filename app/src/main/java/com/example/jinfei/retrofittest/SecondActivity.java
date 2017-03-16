@@ -1,7 +1,6 @@
 package com.example.jinfei.retrofittest;
 
 import android.app.AlertDialog;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,7 +33,7 @@ import rx.Subscriber;
 
 public class SecondActivity extends BaseActivity {
 
-    @BindView(R.id.menu_pic)
+    @BindView(R.id.toolbar_pic)
     RecyclerImageView pic;
     @BindView(R.id.menu_name)
     TextView name;
