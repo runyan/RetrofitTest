@@ -59,7 +59,7 @@ public class HttpMethods implements Cloneable {
                 }
                 Response response = chain.proceed(request);
                 if(isNetworkConnected(context)) {
-                    int maxAge = 60 * 60; // 有网络时 设置缓存超时时间1个小时
+                    int maxAge = 30; // 有网络时 设置缓存超时时间半个小时
                     response.newBuilder()
                             .header("Cache-Control", "public, max-age=" + maxAge)
                             .removeHeader("Pragma")// 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效

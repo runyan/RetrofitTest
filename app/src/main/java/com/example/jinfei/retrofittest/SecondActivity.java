@@ -289,8 +289,8 @@ public class SecondActivity extends BaseActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         if(null != favoriteSubscription && !favoriteSubscription.isUnsubscribed()) {
             favoriteSubscription.unsubscribe();
         }
