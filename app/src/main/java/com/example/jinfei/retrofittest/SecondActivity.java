@@ -68,8 +68,6 @@ public class SecondActivity extends BaseActivity {
     @BindView(R.id.title_text)
     TextView titleText;
 
-    @BindString(R.string.click_to_view_large_image)
-    String largeImageHint;
     @BindString(R.string.menu_detail)
     String menuDetail;
     @BindString(R.string.my_favourite)
@@ -136,7 +134,6 @@ public class SecondActivity extends BaseActivity {
         networkCall();
 
         check();
-        showNormalMessage(largeImageHint);
     }
 
     private void check() {
