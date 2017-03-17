@@ -46,6 +46,8 @@
         </android.support.v7.widget.Toolbar>
 
         <TextView
+            android:id="@+id/view_large_pic"
+            android:visibility="gone"
             android:text="@string/click_to_view_large_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

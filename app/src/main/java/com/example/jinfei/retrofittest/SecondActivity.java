@@ -67,6 +67,8 @@ public class SecondActivity extends BaseActivity {
     Toolbar toolbar;
     @BindView(R.id.title_text)
     TextView titleText;
+    @BindView(R.id.view_large_pic)
+    TextView viewLargePic;
 
     @BindString(R.string.menu_detail)
     String menuDetail;
@@ -153,6 +155,7 @@ public class SecondActivity extends BaseActivity {
             @Override
             public void onCompleted() {
                 mDialog.cancel();
+                viewLargePic.setVisibility(View.VISIBLE);
             }
 
             @Override
