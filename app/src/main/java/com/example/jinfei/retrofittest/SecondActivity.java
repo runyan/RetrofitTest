@@ -311,7 +311,7 @@ public class SecondActivity extends BaseActivity {
                     dialog.dismiss();
                 }
             }
-        }, 10 * 1000);
+        }, 30 * 1000);
     }
 
     private void favoriteLayout(boolean favorite) {
