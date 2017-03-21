@@ -62,8 +62,12 @@ public class MainActivity extends BaseActivity {
     String clickMe;
     @BindString(R.string.app_name)
     String appName;
+    @BindString(R.string.no_updates)
+    String noUpdates;
 
     private List<Cook> list;
+    private List<Cook> tempList;
+    private boolean hasUpdates = false;
 
     private MyRecyclerViewAdapter adapter;
     private LinearLayoutManager mLayoutManager;
@@ -91,7 +95,7 @@ public class MainActivity extends BaseActivity {
         mDialog = Util.getLoadingDialog(mContext);
         mLayoutManager = new LinearLayoutManager(mContext);
         rv.addItemDecoration(new RecyclerViewDivider(mContext, LinearLayoutManager.HORIZONTAL));
-        networkCall();
+        networkCall(false);
 
         search.setFocusable(false);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -116,8 +120,11 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onRefresh() {
                 list.clear();
-                networkCall();
-                showNormalMessage(finishRefreshing);
+                networkCall(true);
+                if(hasUpdates) {
+                    showNormalMessage(finishRefreshing);
+                    hasUpdates = false;
+                }
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -181,15 +188,22 @@ public class MainActivity extends BaseActivity {
     }
 
     public void retry() {
-        networkCall();
+        networkCall(false);
     }
 
-    private void networkCall() {
+    private void networkCall(final boolean isRefreshing) {
         chooseLayout(false, normalLayout);
         Subscriber<TngouResponse<List<Cook>>> subscriber = new Subscriber<TngouResponse<List<Cook>>>() {
             @Override
             public void onCompleted() {
                 mDialog.cancel();
+                if(null != list && isRefreshing) {
+                    if(list.get(0).equals(tempList.get(0))) {
+                        showNormalMessage(noUpdates);
+                    } else {
+                        hasUpdates = true;
+                    }
+                }
             }
 
             @Override
@@ -198,7 +212,7 @@ public class MainActivity extends BaseActivity {
                 handleError(TAG, e, mContext, new NetworkInterface() {
                     @Override
                     public void call() {
-                        networkCall();
+                        networkCall(false);
                     }
                 }, new NetworkError() {
                     @Override
@@ -214,7 +228,7 @@ public class MainActivity extends BaseActivity {
                     handleError(TAG, new ServerException(), mContext, new NetworkInterface() {
                         @Override
                         public void call() {
-                            networkCall();
+                            networkCall(false);
                         }
                     }, new NetworkError() {
                         @Override
@@ -223,6 +237,9 @@ public class MainActivity extends BaseActivity {
                         }
                     });
                     return;
+                }
+                if(isRefreshing) {
+                    tempList = response.tngou;
                 }
                 list = response.tngou;
                 adapter = new MyRecyclerViewAdapter(mContext, list, Type.cook);
@@ -240,7 +257,7 @@ public class MainActivity extends BaseActivity {
 
     private void setResultList() {
         list.clear();
-        networkCall();
+        networkCall(false);
         adapter.addAll(list);
     }
 

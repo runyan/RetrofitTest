@@ -114,4 +114,15 @@ public class Cook {
     public void setRcount(int rcount) {
         this.rcount = rcount;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null)
+            return false;
+        if(!(obj instanceof Cook)) {
+            return false;
+        }
+        Cook another = (Cook) obj;
+        return this.getId() == another.getId();
+    }
 }

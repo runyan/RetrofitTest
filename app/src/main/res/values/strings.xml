@@ -41,4 +41,5 @@
     <string name="menu_detail">菜谱详情</string>
     <string name="search_result">搜索结果</string>
     <string name="click_to_view_large_image">点击图片即可查看大图</string>
+    <string name="no_updates">然而并没有更新</string>
 </resources>
