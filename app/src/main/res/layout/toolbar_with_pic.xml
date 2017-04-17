@@ -24,7 +24,8 @@
             android:scaleType="centerCrop"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="?actionBarSize"
-            android:contentDescription="@string/app_name" />
+            android:contentDescription="@string/app_name"
+            app:layout_collapseMode="parallax"/>
 
         <TextView
             android:id="@+id/view_large_pic"
@@ -42,7 +43,7 @@
             android:layout_height="?actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_collapseMode="pin"
-            app:layout_scrollFlags="scroll|enterAlways"
+
             app:theme="@style/AppTheme.ActionBar" >
 
             <TextView

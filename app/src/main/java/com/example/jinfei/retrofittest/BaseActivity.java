@@ -67,6 +67,11 @@ public class BaseActivity extends AppCompatActivity {
         switch (itemId) {
             case R.id.my_favorite: {
                 Util.redirect(this, FourthActivity.class, null);
+                break;
+            }
+            case android.R.id.home: {
+                finish();
+                break;
             }
         }
         return true;

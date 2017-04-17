@@ -41,8 +41,6 @@ public class SecondActivity extends BaseActivity {
 
     @BindView(R.id.toolbar_pic)
     RecyclerImageView pic;
-    @BindView(R.id.menu_name)
-    TextView name;
     @BindView(R.id.menu_food)
     TextView food;
     @BindView(R.id.menu_keywords)
@@ -128,7 +126,8 @@ public class SecondActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         if(null != actionBar) {
             actionBar.setTitle(null);
-            titleText.setText(menuDetail);
+//            titleText.setText(menuDetail);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         Intent intent = getIntent();
@@ -191,7 +190,6 @@ public class SecondActivity extends BaseActivity {
                 }
                 imagePath = menu.getImg();
                 Util.setImage(mContext, 250f, 200f, imagePath, pic);
-                name.setText(menu.getName());
                 food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
                 keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
                 description.setText(Html.fromHtml("<b>" + descriptionStr + "</b>" + menu.getDescription()));
@@ -199,6 +197,7 @@ public class SecondActivity extends BaseActivity {
                 count.setText(Html.fromHtml("<b>" + countStr + "</b>" + String.valueOf(menu.getCount())));
                 fcount.setText(Html.fromHtml("<b>" + fcountStr + "</b>" + String.valueOf(menu.getFcount())));
                 rcount.setText(Html.fromHtml("<b>" + rcountStr + "</b>" + String.valueOf(menu.getRcount())));
+                titleText.setText(menu.getName());
             }
         };
        subscription = HttpMethods.getInstance(mContext).getMenu(subscriber, mDialog, id);
