@@ -43,7 +43,6 @@
             android:layout_height="?actionBarSize"
             android:background="?attr/colorPrimary"
             app:layout_collapseMode="pin"
-
             app:theme="@style/AppTheme.ActionBar" >
 
             <TextView
