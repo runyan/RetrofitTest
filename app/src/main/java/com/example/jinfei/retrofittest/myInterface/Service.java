@@ -14,12 +14,12 @@ import rx.Observable;
 public interface Service {
 
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("api/cook/list")
+    @GET("cook/list")
     Observable<TngouResponse<List<Cook>>> getRxList(@Query("id") int id, @Query("page") int page, @Query("rows") int rows);
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("api/cook/show/")
+    @GET("cook/show/")
     Observable<Menu> getRxMenu(@Query("id") int id);
     @Headers("Cache-Control: public, max-age=3600")
-    @GET("api/cook/name/")
+    @GET("cook/name/")
     Observable<TngouResponse<List<Cook>>> getRxDishes(@Query("name") String name);
 }

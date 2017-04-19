@@ -32,7 +32,7 @@ import rx.schedulers.Schedulers;
 
 public class HttpMethods implements Cloneable {
 
-    private static final String BASE_URL = "http://www.tngou.net/";
+    private static final String BASE_URL = "https://api.tngou.net/";
 
     private static final int DEFAULT_TIMEOUT = 30;
 
