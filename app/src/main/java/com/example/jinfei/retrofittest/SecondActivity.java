@@ -193,7 +193,6 @@ public class SecondActivity extends BaseActivity {
                 }
                 imagePath = menu.getImg();
                 Util.setImage(mContext, 250f, 200f, imagePath, pic);
-//                titleText.setText(menu.getName());
                 toolbar.setTitle(menu.getName());
                 food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
                 keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
