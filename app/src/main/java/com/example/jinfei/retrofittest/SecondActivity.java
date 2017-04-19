@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -63,10 +65,10 @@ public class SecondActivity extends BaseActivity {
     FloatingActionButton unFavourite;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.title_text)
-    TextView titleText;
     @BindView(R.id.view_large_pic)
     TextView viewLargePic;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
 
     @BindString(R.string.menu_detail)
     String menuDetail;
@@ -128,6 +130,8 @@ public class SecondActivity extends BaseActivity {
             actionBar.setTitle(null);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        collapsingToolbar.setExpandedTitleColor(Color.WHITE);
+        collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
 
         Intent intent = getIntent();
         id = intent.getIntExtra("menuId", 0);
@@ -189,7 +193,8 @@ public class SecondActivity extends BaseActivity {
                 }
                 imagePath = menu.getImg();
                 Util.setImage(mContext, 250f, 200f, imagePath, pic);
-                titleText.setText(menu.getName());
+//                titleText.setText(menu.getName());
+                toolbar.setTitle(menu.getName());
                 food.setText(Html.fromHtml("<b>" + foodStr + "</b>" + menu.getFood()));
                 keywords.setText(Html.fromHtml("<b>" + keywordsStr + "</b>" + menu.getKeywords()));
                 description.setText(Html.fromHtml("<b>" + descriptionStr + "</b>" + menu.getDescription()));

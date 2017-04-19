@@ -45,14 +45,6 @@
             app:layout_collapseMode="pin"
             app:theme="@style/AppTheme.ActionBar" >
 
-            <TextView
-                android:id="@+id/title_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.CollapsingToolbarLayout>
