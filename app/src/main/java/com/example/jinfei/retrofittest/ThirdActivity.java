@@ -129,7 +129,7 @@ public class ThirdActivity extends BaseActivity  {
                     return;
                 }
                 list = response.tngou;
-                if(null == list || response.total == 0) {
+                if(null == list || list.isEmpty()) {
                     showNormalMessage(notFound);
                     overridePendingTransition(0, 0);
                     finish();
